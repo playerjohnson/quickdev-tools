@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator — Free Online Gradient Maker Tool</title>
+    <meta name="description" content="Create beautiful CSS gradients with live preview. Generate linear, radial and conic gradients with multiple colour stops. Copy CSS code instantly.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/tools/css-gradient-generator.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553969093740923" crossorigin="anonymous"></script>
+    <style>
+        .preview-box { width: 100%; height: 280px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 24px; transition: background .3s; }
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .stop-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+        .stop-row input[type="color"] { width: 40px; height: 40px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; background: none; padding: 2px; }
+        .stop-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+        .stop-row .pos-label { font-family: var(--mono); font-size: .8rem; color: var(--text-muted); min-width: 36px; text-align: right; }
+        .remove-stop { background: none; border: none; color: var(--red); cursor: pointer; font-size: 1.1rem; padding: 4px 8px; border-radius: 4px; }
+        .remove-stop:hover { background: var(--red-bg); }
+        .code-output { font-family: var(--mono); font-size: .85rem; background: var(--bg-input); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); color: var(--cyan); white-space: pre-wrap; word-break: break-all; min-height: 60px; }
+        .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; margin-top: 8px; }
+        .preset-swatch { height: 40px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: all .15s; }
+        .preset-swatch:hover { border-color: var(--text); transform: scale(1.08); }
+        .angle-control { display: flex; align-items: center; gap: 12px; }
+        .angle-control input[type="range"] { flex: 1; accent-color: var(--accent); }
+        .angle-value { font-family: var(--mono); font-size: .85rem; min-width: 45px; }
+        @media (max-width: 768px) { .controls-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"><div class="nav-inner">
+        <a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a>
+        <ul class="nav-links"><li><a href="../">Tools</a></li></ul>
+        <button class="nav-hamburger" aria-label="Toggle menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    </div></nav>
+
+    <div class="tool-hero">
+        <h1>CSS Gradient Generator</h1>
+        <p>Create beautiful gradients with live preview and copy the CSS</p>
+    </div>
+
+    <div class="tool-container">
+        <div class="preview-box" id="preview"></div>
+
+        <div class="controls-grid mb-md">
+            <div>
+                <label>Type</label>
+                <div class="tabs mb-md">
+                    <button class="tab active" onclick="setType('linear',this)">Linear</button>
+                    <button class="tab" onclick="setType('radial',this)">Radial</button>
+                    <button class="tab" onclick="setType('conic',this)">Conic</button>
+                </div>
+
+                <div id="angleControl">
+                    <label>Direction</label>
+                    <div class="angle-control mb-md">
+                        <input type="range" min="0" max="360" value="135" id="angle" oninput="updateAngle()">
+                        <span class="angle-value" id="angleVal">135°</span>
+                    </div>
+                </div>
+
+                <label>Colour Stops</label>
+                <div id="stopsContainer"></div>
+                <button class="btn btn-secondary btn-sm mt-sm" onclick="addStop()">+ Add Stop</button>
+            </div>
+            <div>
+                <label>CSS Output</label>
+                <div class="code-output" id="cssOutput"></div>
+                <div class="btn-group mt-sm">
+                    <button class="btn btn-primary btn-sm" onclick="copyCss()">Copy CSS</button>
+                </div>
+
+                <label class="mt-lg">Presets</label>
+                <div class="preset-grid" id="presets"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>How to Use</h2>
+        <p>Choose a gradient type (linear, radial, or conic), adjust the direction, and set your colour stops. The preview updates in real-time. Click <code>Copy CSS</code> to get the property value for your stylesheet. Click any preset to start from a predefined gradient.</p>
+
+        <h2>CSS Gradient Syntax</h2>
+        <p>A CSS linear gradient follows the pattern: <code>background: linear-gradient(angle, colour1 pos1, colour2 pos2)</code>. Radial gradients use <code>radial-gradient(circle, ...)</code> and conic gradients use <code>conic-gradient(from angle, ...)</code>. All modern browsers support these without vendor prefixes.</p>
+    </div>
+
+    <footer class="site-footer"><div class="footer-inner">
+        <div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. Client-side only.</p></div>
+        <div class="footer-col"><h4>Tools</h4><ul>
+            <li><a href="json-formatter.html">JSON Formatter</a></li><li><a href="regex-tester.html">Regex Tester</a></li><li><a href="colour-palette.html">Colour Palette</a></li>
+        </ul></div>
+    </div><div class="footer-bottom"><p>All tools run client-side. <a href="../privacy.html" style="color:var(--text-dim);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-dim);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+    <script>
+    let type = 'linear';
+    let stops = [
+        { color: '#3b82f6', pos: 0 },
+        { color: '#a855f7', pos: 50 },
+        { color: '#ec4899', pos: 100 }
+    ];
+    const presets = [
+        ['#667eea','#764ba2'], ['#f093fb','#f5576c'], ['#4facfe','#00f2fe'],
+        ['#43e97b','#38f9d7'], ['#fa709a','#fee140'], ['#a18cd1','#fbc2eb'],
+        ['#ffecd2','#fcb69f'], ['#ff9a9e','#fecfef'], ['#a1c4fd','#c2e9fb'],
+        ['#d4fc79','#96e6a1'], ['#84fab0','#8fd3f4'], ['#f6d365','#fda085'],
+        ['#fbc2eb','#a6c1ee'], ['#fdcbf1','#e6dee9'], ['#0c3483','#a2b6df'],
+        ['#667eea','#f093fb'], ['#e0c3fc','#8ec5fc'], ['#ff0844','#ffb199'],
+    ];
+
+    function setType(t, btn) {
+        type = t;
+        document.querySelectorAll('.tabs .tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('angleControl').style.display = t === 'radial' ? 'none' : 'block';
+        update();
+    }
+
+    function renderStops() {
+        const c = document.getElementById('stopsContainer');
+        c.innerHTML = stops.map((s, i) => `
+            <div class="stop-row">
+                <input type="color" value="${s.color}" onchange="stops[${i}].color=this.value;update()">
+                <input type="range" min="0" max="100" value="${s.pos}" oninput="stops[${i}].pos=+this.value;this.nextElementSibling.textContent=this.value+'%';update()">
+                <span class="pos-label">${s.pos}%</span>
+                ${stops.length > 2 ? `<button class="remove-stop" onclick="removeStop(${i})">×</button>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function addStop() {
+        const last = stops[stops.length - 1];
+        const prev = stops[stops.length - 2];
+        const pos = Math.min(100, Math.round((last.pos + prev.pos) / 2 + 10));
+        stops.push({ color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'), pos });
+        stops.sort((a, b) => a.pos - b.pos);
+        renderStops(); update();
+    }
+
+    function removeStop(i) { if (stops.length > 2) { stops.splice(i, 1); renderStops(); update(); } }
+
+    function updateAngle() {
+        document.getElementById('angleVal').textContent = document.getElementById('angle').value + '°';
+        update();
+    }
+
+    function update() {
+        const sorted = [...stops].sort((a, b) => a.pos - b.pos);
+        const colourStops = sorted.map(s => `${s.color} ${s.pos}%`).join(', ');
+        const angle = document.getElementById('angle').value;
+        let css;
+        if (type === 'linear') css = `linear-gradient(${angle}deg, ${colourStops})`;
+        else if (type === 'radial') css = `radial-gradient(circle, ${colourStops})`;
+        else css = `conic-gradient(from ${angle}deg, ${colourStops})`;
+        document.getElementById('preview').style.background = css;
+        document.getElementById('cssOutput').textContent = `background: ${css};`;
+    }
+
+    function copyCss() { QD.copy(document.getElementById('cssOutput').textContent, document.querySelector('[onclick="copyCss()"]')); }
+
+    function loadPreset(cols) {
+        stops = cols.map((c, i) => ({ color: c, pos: Math.round(i / (cols.length - 1) * 100) }));
+        renderStops(); update();
+    }
+
+    // Render presets
+    document.getElementById('presets').innerHTML = presets.map((p, i) =>
+        `<div class="preset-swatch" style="background:linear-gradient(135deg,${p.join(',')})" onclick="loadPreset(${JSON.stringify(p).replace(/"/g, '&quot;')})"></div>`
+    ).join('');
+
+    renderStops();
+    update();
+    </script>
+</body>
+</html>

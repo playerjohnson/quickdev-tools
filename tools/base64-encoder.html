@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoder & Decoder Online — Free Encode/Decode Tool</title>
+    <meta name="description" content="Encode and decode Base64 strings online instantly. Supports text and URL-safe encoding. Free, client-side, no data sent to server.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/tools/base64-encoder.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553969093740923" crossorigin="anonymous"></script>
+    <style>
+        .mode-toggle { display: flex; margin-bottom: 16px; }
+        .mode-btn { flex: 1; padding: 12px; text-align: center; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-muted); font-size: .9rem; font-weight: 600; cursor: pointer; transition: all .15s; font-family: var(--sans); }
+        .mode-btn:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+        .mode-btn:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .mode-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .swap-btn { display: flex; align-items: center; justify-content: center; padding: 8px; margin: 8px auto; background: var(--bg-hover); border: 1px solid var(--border); border-radius: 50%; cursor: pointer; color: var(--text-muted); width: 40px; height: 40px; transition: all .15s; }
+        .swap-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .char-count { font-size: .78rem; color: var(--text-dim); margin-top: 6px; text-align: right; font-family: var(--mono); }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"><div class="nav-inner">
+        <a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a>
+        <ul class="nav-links"><li><a href="../">Tools</a></li></ul>
+        <button class="nav-hamburger" aria-label="Toggle menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    </div></nav>
+
+    <div class="tool-hero">
+        <h1>Base64 Encode / Decode</h1>
+        <p>Convert text to Base64 and back — instantly, in your browser</p>
+    </div>
+
+    <div class="tool-container narrow">
+        <div class="mode-toggle">
+            <button class="mode-btn active" onclick="setMode('encode',this)">Encode</button>
+            <button class="mode-btn" onclick="setMode('decode',this)">Decode</button>
+        </div>
+
+        <div class="panel mb-md">
+            <div class="panel-header"><span id="inputLabel">Plain Text</span><button class="btn btn-sm btn-secondary" onclick="clearAll()">Clear</button></div>
+            <textarea id="inputArea" placeholder="Type or paste text here..." style="min-height:180px" spellcheck="false"></textarea>
+            <div class="char-count" id="inputCount">0 chars</div>
+        </div>
+
+        <div class="text-center">
+            <button class="swap-btn" onclick="swapFields()" title="Swap input/output">⇅</button>
+        </div>
+
+        <div class="panel mb-md">
+            <div class="panel-header"><span id="outputLabel">Base64 Encoded</span>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-secondary" onclick="copyResult()">Copy</button>
+                </div>
+            </div>
+            <textarea id="outputArea" readonly style="min-height:180px;cursor:default" spellcheck="false"></textarea>
+            <div class="char-count" id="outputCount">0 chars</div>
+        </div>
+
+        <div id="statusBar" class="status-bar mb-md" style="display:none"></div>
+
+        <div class="flex items-center gap-sm mb-md">
+            <input type="checkbox" id="urlSafe" onchange="convert()">
+            <label for="urlSafe" style="margin:0;text-transform:none;font-size:.85rem;cursor:pointer">URL-safe encoding (replace + / with - _)</label>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>What Is Base64?</h2>
+        <p>Base64 is a binary-to-text encoding scheme that represents binary data as an ASCII string. It's commonly used to embed images in HTML/CSS, transmit data in URLs or JSON, encode email attachments (MIME), and store binary data in text-only formats like XML.</p>
+
+        <h2>URL-Safe Base64</h2>
+        <p>Standard Base64 uses <code>+</code> and <code>/</code> characters, which have special meaning in URLs. URL-safe Base64 replaces these with <code>-</code> and <code>_</code> to avoid encoding issues. Use URL-safe mode when embedding Base64 in query parameters or URLs.</p>
+
+        <h2>How It Works</h2>
+        <p>Base64 encoding takes every 3 bytes (24 bits) of input and splits them into 4 groups of 6 bits, mapping each group to a printable ASCII character from a 64-character alphabet. This means encoded output is approximately 33% larger than the original data.</p>
+    </div>
+
+    <footer class="site-footer"><div class="footer-inner">
+        <div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. Client-side only.</p></div>
+        <div class="footer-col"><h4>Tools</h4><ul>
+            <li><a href="json-formatter.html">JSON Formatter</a></li><li><a href="regex-tester.html">Regex Tester</a></li><li><a href="xml-formatter.html">XML Formatter</a></li>
+        </ul></div>
+    </div><div class="footer-bottom"><p>All tools run client-side. <a href="../privacy.html" style="color:var(--text-dim);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-dim);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+    <script>
+    let mode = 'encode';
+    const inputArea = document.getElementById('inputArea');
+    const outputArea = document.getElementById('outputArea');
+
+    function setMode(m, btn) {
+        mode = m;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('inputLabel').textContent = m === 'encode' ? 'Plain Text' : 'Base64 Encoded';
+        document.getElementById('outputLabel').textContent = m === 'encode' ? 'Base64 Encoded' : 'Decoded Text';
+        inputArea.placeholder = m === 'encode' ? 'Type or paste text here...' : 'Paste Base64 string here...';
+        convert();
+    }
+
+    function convert() {
+        const input = inputArea.value;
+        const bar = document.getElementById('statusBar');
+        const urlSafe = document.getElementById('urlSafe').checked;
+        if (!input) { outputArea.value = ''; bar.style.display = 'none'; updateCounts(); return; }
+        try {
+            if (mode === 'encode') {
+                let result = btoa(unescape(encodeURIComponent(input)));
+                if (urlSafe) result = result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+                outputArea.value = result;
+            } else {
+                let b64 = input.trim();
+                if (urlSafe) { b64 = b64.replace(/-/g, '+').replace(/_/g, '/'); while (b64.length % 4) b64 += '='; }
+                outputArea.value = decodeURIComponent(escape(atob(b64)));
+            }
+            bar.className = 'status-bar valid mb-md'; bar.textContent = '✓ ' + (mode === 'encode' ? 'Encoded' : 'Decoded') + ' successfully';
+            bar.style.display = 'flex';
+        } catch (e) {
+            outputArea.value = '';
+            bar.className = 'status-bar invalid mb-md'; bar.textContent = '✗ ' + e.message;
+            bar.style.display = 'flex';
+        }
+        updateCounts();
+    }
+
+    function updateCounts() {
+        document.getElementById('inputCount').textContent = inputArea.value.length + ' chars';
+        document.getElementById('outputCount').textContent = outputArea.value.length + ' chars';
+    }
+
+    function swapFields() {
+        const temp = inputArea.value;
+        inputArea.value = outputArea.value;
+        outputArea.value = temp;
+        mode = mode === 'encode' ? 'decode' : 'encode';
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active'));
+        document.getElementById('inputLabel').textContent = mode === 'encode' ? 'Plain Text' : 'Base64 Encoded';
+        document.getElementById('outputLabel').textContent = mode === 'encode' ? 'Base64 Encoded' : 'Decoded Text';
+        convert();
+    }
+
+    function copyResult() { QD.copy(outputArea.value, document.querySelector('[onclick="copyResult()"]')); }
+    function clearAll() { inputArea.value = ''; outputArea.value = ''; document.getElementById('statusBar').style.display = 'none'; updateCounts(); }
+
+    inputArea.addEventListener('input', QD.debounce(convert, 150));
+    </script>
+</body>
+</html>

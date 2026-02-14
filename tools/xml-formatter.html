@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Formatter & Validator Online — Free XML Pretty Print Tool</title>
+    <meta name="description" content="Format, validate and minify XML online. Free XML formatter with syntax highlighting, error detection and indentation options. Client-side, no data sent to server.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/tools/xml-formatter.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553969093740923" crossorigin="anonymous"></script>
+    <style>
+        .xml-output { min-height: 300px; padding: 16px; overflow: auto; font-family: var(--mono); font-size: .85rem; line-height: 1.65; white-space: pre-wrap; word-break: break-all; }
+        .xml-output .tag { color: #3b82f6; }
+        .xml-output .attr { color: #06b6d4; }
+        .xml-output .val { color: #22c55e; }
+        .xml-output .cmt { color: var(--text-dim); font-style: italic; }
+        .xml-output .txt { color: var(--text); }
+        .stats { display: flex; gap: 16px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--border); font-size: .78rem; color: var(--text-dim); }
+        .indent-options { display: flex; gap: 4px; }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"><div class="nav-inner">
+        <a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a>
+        <ul class="nav-links"><li><a href="../">Tools</a></li></ul>
+        <button class="nav-hamburger" aria-label="Toggle menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    </div></nav>
+
+    <div class="tool-hero">
+        <h1>XML Formatter & Validator</h1>
+        <p>Format, validate and minify XML — everything runs in your browser</p>
+    </div>
+
+    <div class="tool-container wide">
+        <div class="flex items-center justify-between mb-md" style="flex-wrap:wrap;gap:10px">
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" onclick="formatXML()">Format</button>
+                <button class="btn btn-secondary btn-sm" onclick="minifyXML()">Minify</button>
+                <button class="btn btn-secondary btn-sm" onclick="copyOutput()">Copy</button>
+                <button class="btn btn-secondary btn-sm" onclick="downloadXML()">Download</button>
+                <button class="btn btn-secondary btn-sm" onclick="clearAll()">Clear</button>
+            </div>
+            <div class="flex items-center gap-sm">
+                <label style="margin:0;text-transform:none;font-size:.8rem">Indent:</label>
+                <div class="indent-options">
+                    <button class="tab active" onclick="setIndent(2,this)">2</button>
+                    <button class="tab" onclick="setIndent(4,this)">4</button>
+                    <button class="tab" onclick="setIndent(1,this)">Tab</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="split-pane">
+            <div class="panel">
+                <div class="panel-header"><span>Input</span><span class="text-mono" id="inputSize">0 bytes</span></div>
+                <textarea id="xmlInput" placeholder='Paste your XML here...
+
+Example:
+<bookstore><book><title>DevOps Handbook</title><author>Kim</author><year>2016</year></book></bookstore>' spellcheck="false"></textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><span>Output</span><span id="statusBadge"></span></div>
+                <div class="xml-output" id="xmlOutput">Formatted output will appear here...</div>
+                <div class="stats" id="xmlStats"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>How to Use</h2>
+        <p>Paste XML into the input panel and click <code>Format</code> to pretty-print with syntax highlighting. Click <code>Minify</code> to strip all unnecessary whitespace. The tool validates your XML using the browser's built-in DOMParser and shows any errors.</p>
+
+        <h2>What Is XML?</h2>
+        <p>XML (Extensible Markup Language) is a markup language for encoding documents in a human-readable and machine-readable format. It's used extensively in configuration files (Maven, Spring, .NET), SOAP web services, RSS/Atom feeds, SVG graphics, and data interchange between systems.</p>
+
+        <h2>XML vs JSON</h2>
+        <p>JSON is more compact and generally preferred for REST APIs and web applications. XML remains dominant in enterprise systems, SOAP services, document formats (DOCX, XLSX are XML internally), and scenarios requiring schemas, namespaces, or mixed content.</p>
+    </div>
+
+    <footer class="site-footer"><div class="footer-inner">
+        <div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. Client-side only.</p></div>
+        <div class="footer-col"><h4>Tools</h4><ul>
+            <li><a href="json-formatter.html">JSON Formatter</a></li><li><a href="regex-tester.html">Regex Tester</a></li><li><a href="base64-encoder.html">Base64 Encode/Decode</a></li>
+        </ul></div>
+    </div><div class="footer-bottom"><p>All tools run client-side. <a href="../privacy.html" style="color:var(--text-dim);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-dim);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+    <script>
+    let indent = 2;
+    const input = document.getElementById('xmlInput');
+    const output = document.getElementById('xmlOutput');
+    const stats = document.getElementById('xmlStats');
+    const badge = document.getElementById('statusBadge');
+
+    function setIndent(n, btn) {
+        indent = n;
+        document.querySelectorAll('.indent-options .tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        if (input.value.trim()) formatXML();
+    }
+
+    function formatXML() {
+        const raw = input.value.trim();
+        if (!raw) { output.textContent = 'Paste XML in the input panel...'; badge.innerHTML = ''; stats.innerHTML = ''; return; }
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(raw, 'application/xml');
+        const errNode = doc.querySelector('parsererror');
+        if (errNode) {
+            badge.innerHTML = '<span style="color:var(--red)">✗ Invalid</span>';
+            output.innerHTML = '<span style="color:var(--red)">✗ ' + QD.escHtml(errNode.textContent.split('\n')[0]) + '</span>\n\n' + QD.escHtml(raw);
+            stats.innerHTML = '';
+            return;
+        }
+        const formatted = prettyPrint(doc.documentElement, 0);
+        const decl = raw.trim().startsWith('<?xml') ? raw.match(/<\?xml[^?]*\?>/)?.[0] + '\n' : '';
+        const full = decl + formatted;
+        output.innerHTML = highlightXML(full);
+        badge.innerHTML = '<span style="color:var(--green)">✓ Valid XML</span>';
+        showStats(raw, full, doc);
+    }
+
+    function prettyPrint(node, level) {
+        const ind = indent === 1 ? '\t'.repeat(level) : ' '.repeat(indent * level);
+        const ind1 = indent === 1 ? '\t'.repeat(level + 1) : ' '.repeat(indent * (level + 1));
+        let result = ind + '<' + node.nodeName;
+        for (const attr of node.attributes) result += ` ${attr.name}="${attr.value}"`;
+        const children = Array.from(node.childNodes);
+        const elChildren = children.filter(c => c.nodeType === 1);
+        const textContent = children.filter(c => c.nodeType === 3).map(c => c.textContent.trim()).join('');
+        if (children.length === 0) return result + '/>';
+        if (elChildren.length === 0 && textContent) return result + '>' + QD.escHtml(textContent).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>') + '</' + node.nodeName + '>';
+        result += '>\n';
+        for (const child of children) {
+            if (child.nodeType === 1) result += prettyPrint(child, level + 1) + '\n';
+            else if (child.nodeType === 3 && child.textContent.trim()) result += ind1 + child.textContent.trim() + '\n';
+            else if (child.nodeType === 8) result += ind1 + '<!--' + child.textContent + '-->\n';
+        }
+        result += ind + '</' + node.nodeName + '>';
+        return result;
+    }
+
+    function highlightXML(str) {
+        return QD.escHtml(str)
+            .replace(/&lt;(\/?)([\w:.-]+)/g, '&lt;<span class="tag">$1$2</span>')
+            .replace(/([\w:.-]+)=&quot;([^&]*)&quot;/g, '<span class="attr">$1</span>=&quot;<span class="val">$2</span>&quot;')
+            .replace(/&lt;!--(.+?)--&gt;/g, '<span class="cmt">&lt;!--$1--&gt;</span>');
+    }
+
+    function minifyXML() {
+        const raw = input.value.trim();
+        if (!raw) return;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(raw, 'application/xml');
+        if (doc.querySelector('parsererror')) { formatXML(); return; }
+        const s = new XMLSerializer();
+        const minified = s.serializeToString(doc).replace(/>\s+</g, '><');
+        output.textContent = minified;
+        badge.innerHTML = '<span style="color:var(--green)">✓ Minified</span>';
+        const saved = raw.length - minified.length;
+        stats.innerHTML = `<span>Minified: ${fmtBytes(minified.length)}</span><span>Saved: ${fmtBytes(saved)} (${((saved/raw.length)*100).toFixed(1)}%)</span>`;
+    }
+
+    function showStats(raw, formatted, doc) {
+        const els = doc.getElementsByTagName('*').length;
+        const maxD = getDepth(doc.documentElement);
+        stats.innerHTML = `<span>Elements: ${els}</span><span>Depth: ${maxD}</span><span>Input: ${fmtBytes(raw.length)}</span><span>Formatted: ${fmtBytes(formatted.length)}</span>`;
+    }
+
+    function getDepth(node) { let d = 0; for (const c of node.children) d = Math.max(d, getDepth(c) + 1); return d; }
+    function copyOutput() { QD.copy(output.textContent, document.querySelector('[onclick="copyOutput()"]')); }
+    function downloadXML() { const t = output.textContent; if (t && t !== 'Formatted output will appear here...') QD.download(t, 'formatted.xml', 'application/xml'); }
+    function clearAll() { input.value = ''; output.textContent = 'Formatted output will appear here...'; badge.innerHTML = ''; stats.innerHTML = ''; document.getElementById('inputSize').textContent = '0 bytes'; }
+    function fmtBytes(b) { if (b < 1024) return b + ' B'; if (b < 1048576) return (b/1024).toFixed(1) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
+
+    input.addEventListener('input', QD.debounce(() => {
+        document.getElementById('inputSize').textContent = fmtBytes(new Blob([input.value]).size);
+        if (input.value.trim()) formatXML();
+    }, 300));
+    </script>
+</body>
+</html>

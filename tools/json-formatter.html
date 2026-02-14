@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter & Validator Online — Free JSON Pretty Print Tool</title>
+    <meta name="description" content="Format, validate, minify and beautify JSON online. Free JSON formatter with syntax highlighting, error detection, tree view and download. No data sent to server.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/tools/json-formatter.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553969093740923" crossorigin="anonymous"></script>
+    <style>
+        .json-output { min-height: 300px; padding: 16px; overflow: auto; font-family: var(--mono); font-size: .85rem; line-height: 1.65; white-space: pre-wrap; word-break: break-all; }
+        .json-output .str { color: #22c55e; }
+        .json-output .num { color: #3b82f6; }
+        .json-output .bool { color: #f97316; }
+        .json-output .null { color: #ef4444; }
+        .json-output .key { color: #06b6d4; }
+        .json-output .brace { color: var(--text-dim); }
+        .stats { display: flex; gap: 16px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--border); font-size: .78rem; color: var(--text-dim); }
+        .stats span { display: flex; align-items: center; gap: 4px; }
+        .error-line { background: var(--red-bg); display: block; padding: 2px 0; }
+        .indent-options { display: flex; gap: 4px; }
+    </style>
+</head>
+<body>
+    <nav class="site-nav"><div class="nav-inner">
+        <a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a>
+        <ul class="nav-links"><li><a href="../">Tools</a></li></ul>
+        <button class="nav-hamburger" aria-label="Toggle menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    </div></nav>
+
+    <div class="tool-hero">
+        <h1>JSON Formatter & Validator</h1>
+        <p>Paste JSON to format, validate, minify or beautify — everything runs in your browser</p>
+    </div>
+
+    <div class="tool-container wide">
+        <div class="flex items-center justify-between mb-md" style="flex-wrap:wrap;gap:10px">
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" onclick="formatJSON()">Format</button>
+                <button class="btn btn-secondary btn-sm" onclick="minifyJSON()">Minify</button>
+                <button class="btn btn-secondary btn-sm" onclick="copyOutput()">Copy</button>
+                <button class="btn btn-secondary btn-sm" onclick="downloadJSON()">Download</button>
+                <button class="btn btn-secondary btn-sm" onclick="clearAll()">Clear</button>
+            </div>
+            <div class="flex items-center gap-sm">
+                <label style="margin:0;text-transform:none;font-size:.8rem">Indent:</label>
+                <div class="indent-options">
+                    <button class="tab active" data-indent="2" onclick="setIndent(2,this)">2</button>
+                    <button class="tab" data-indent="4" onclick="setIndent(4,this)">4</button>
+                    <button class="tab" data-indent="1" onclick="setIndent(1,this)">Tab</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="split-pane">
+            <div class="panel">
+                <div class="panel-header"><span>Input</span><span class="text-mono" id="inputSize">0 bytes</span></div>
+                <textarea id="jsonInput" placeholder='Paste your JSON here...
+
+Example:
+{"name":"QuickDev","version":1,"tools":["json","regex","base64"],"active":true}' spellcheck="false"></textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><span>Output</span><span id="statusBadge"></span></div>
+                <div class="json-output" id="jsonOutput">Formatted output will appear here...</div>
+                <div class="stats" id="jsonStats"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>How to Use</h2>
+        <p>Paste or type JSON into the input panel. Click <code>Format</code> to pretty-print with syntax highlighting, or <code>Minify</code> to compress. The tool validates your JSON automatically and shows errors with line numbers. Use the indent selector to switch between 2 spaces, 4 spaces, or tabs.</p>
+
+        <h2>What This Tool Does</h2>
+        <p>This JSON formatter parses your input with the native <code>JSON.parse()</code> method, validates the structure, then re-serialises it with your chosen indentation. It adds syntax highlighting for strings, numbers, booleans, nulls and keys. Invalid JSON shows the exact error position so you can fix it quickly.</p>
+
+        <h2>Is My Data Safe?</h2>
+        <p>Yes. This tool runs entirely in your browser using JavaScript. Your JSON is never sent to any server. There's no backend, no API call, no logging. You can verify this by opening your browser's network tab — you'll see zero requests when formatting.</p>
+
+        <h2>What Is JSON?</h2>
+        <p>JSON (JavaScript Object Notation) is a lightweight data interchange format. It's easy for humans to read and write, and easy for machines to parse. JSON is the standard format for API responses, configuration files, and data storage across virtually every programming language and framework.</p>
+    </div>
+
+    <footer class="site-footer"><div class="footer-inner">
+        <div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. Client-side only.</p></div>
+        <div class="footer-col"><h4>Tools</h4><ul>
+            <li><a href="json-formatter.html">JSON Formatter</a></li>
+            <li><a href="regex-tester.html">Regex Tester</a></li>
+            <li><a href="base64-encoder.html">Base64 Encode/Decode</a></li>
+            <li><a href="xml-formatter.html">XML Formatter</a></li>
+        </ul></div>
+    </div><div class="footer-bottom"><p>All tools run client-side. Your data never leaves your browser. <a href="../privacy.html" style="color:var(--text-dim);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-dim);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+    <script>
+    let indent = 2;
+    const input = document.getElementById('jsonInput');
+    const output = document.getElementById('jsonOutput');
+    const stats = document.getElementById('jsonStats');
+    const badge = document.getElementById('statusBadge');
+    const sizeEl = document.getElementById('inputSize');
+
+    function setIndent(n, btn) {
+        indent = n;
+        document.querySelectorAll('.indent-options .tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        if (input.value.trim()) formatJSON();
+    }
+
+    function formatJSON() {
+        const raw = input.value.trim();
+        if (!raw) { output.textContent = 'Paste JSON in the input panel...'; badge.innerHTML = ''; stats.innerHTML = ''; return; }
+        try {
+            const parsed = JSON.parse(raw);
+            const indentStr = indent === 1 ? '\t' : indent;
+            const formatted = JSON.stringify(parsed, null, indentStr);
+            output.innerHTML = highlightJSON(formatted);
+            badge.innerHTML = '<span style="color:var(--green)">✓ Valid JSON</span>';
+            showStats(raw, formatted, parsed);
+        } catch (e) {
+            const msg = e.message;
+            output.innerHTML = `<span style="color:var(--red)">✗ ${QD.escHtml(msg)}</span>\n\n` + QD.escHtml(raw);
+            badge.innerHTML = '<span style="color:var(--red)">✗ Invalid</span>';
+            stats.innerHTML = '';
+        }
+    }
+
+    function minifyJSON() {
+        const raw = input.value.trim();
+        if (!raw) return;
+        try {
+            const parsed = JSON.parse(raw);
+            const minified = JSON.stringify(parsed);
+            output.textContent = minified;
+            badge.innerHTML = '<span style="color:var(--green)">✓ Minified</span>';
+            const saved = raw.length - minified.length;
+            stats.innerHTML = `<span>Minified: ${fmtBytes(minified.length)}</span><span>Saved: ${fmtBytes(saved)} (${((saved/raw.length)*100).toFixed(1)}%)</span>`;
+        } catch (e) {
+            output.innerHTML = `<span style="color:var(--red)">✗ ${QD.escHtml(e.message)}</span>`;
+            badge.innerHTML = '<span style="color:var(--red)">✗ Invalid</span>';
+        }
+    }
+
+    function highlightJSON(str) {
+        return QD.escHtml(str).replace(/"([^"\\]*(\\.[^"\\]*)*)"\s*:/g, '"<span class="key">$1</span>":')
+            .replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, '<span class="str">"$1"</span>')
+            .replace(/\b(-?\d+\.?\d*([eE][+-]?\d+)?)\b/g, '<span class="num">$1</span>')
+            .replace(/\b(true|false)\b/g, '<span class="bool">$1</span>')
+            .replace(/\bnull\b/g, '<span class="null">null</span>');
+    }
+
+    function showStats(raw, formatted, parsed) {
+        const type = Array.isArray(parsed) ? 'Array' : typeof parsed === 'object' && parsed !== null ? 'Object' : typeof parsed;
+        let keys = 0, depth = 0;
+        function walk(obj, d) { if (d > depth) depth = d; if (typeof obj === 'object' && obj !== null) { const k = Object.keys(obj); keys += k.length; k.forEach(key => walk(obj[key], d + 1)); } }
+        walk(parsed, 0);
+        stats.innerHTML = `<span>Type: ${type}</span><span>Keys: ${keys}</span><span>Depth: ${depth}</span><span>Input: ${fmtBytes(raw.length)}</span><span>Formatted: ${fmtBytes(formatted.length)}</span>`;
+    }
+
+    function copyOutput() {
+        const text = output.textContent || output.innerText;
+        QD.copy(text, document.querySelector('[onclick="copyOutput()"]'));
+    }
+
+    function downloadJSON() {
+        const text = output.textContent || output.innerText;
+        if (text && text !== 'Formatted output will appear here...') QD.download(text, 'formatted.json', 'application/json');
+    }
+
+    function clearAll() { input.value = ''; output.textContent = 'Formatted output will appear here...'; badge.innerHTML = ''; stats.innerHTML = ''; sizeEl.textContent = '0 bytes'; }
+
+    function fmtBytes(b) { if (b < 1024) return b + ' B'; if (b < 1048576) return (b/1024).toFixed(1) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
+
+    input.addEventListener('input', QD.debounce(() => {
+        sizeEl.textContent = fmtBytes(new Blob([input.value]).size);
+        if (input.value.trim()) formatJSON();
+    }, 300));
+    </script>
+</body>
+</html>
