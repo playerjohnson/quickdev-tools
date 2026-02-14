@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoding Explained: When and Why to Use It (2026)</title>
+    <meta name="description" content="What Base64 encoding is, how it works, when to use it and common pitfalls. Covers data URIs, API authentication, email attachments and JWT tokens.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/blog/base64-encoding-explained.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553969093740923" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GSVNXL004D"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-GSVNXL004D");</script>
+</head>
+<body>
+    <nav class="site-nav"><div class="nav-inner"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="./" class="active">Blog</a></li></ul><button class="nav-hamburger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></div></nav>
+
+    <div class="blog-article-hero"><h1>Base64 Encoding Explained: When and Why to Use It</h1><p class="meta">14 February 2026 · 6 min read</p></div>
+
+    <article class="blog-article">
+        <h2>What Is Base64?</h2>
+        <p>Base64 is a binary-to-text encoding scheme that converts binary data into a string of 64 ASCII characters (A-Z, a-z, 0-9, + and /). It's not encryption — it's encoding. Anyone can decode Base64 back to the original data. Its purpose is to safely transmit binary data through systems that only handle text.</p>
+        <p>Every 3 bytes of input produce 4 characters of Base64 output, so encoded data is roughly 33% larger than the original. The <code>=</code> character is used as padding when the input length isn't divisible by 3.</p>
+
+        <h2>How It Works</h2>
+        <p>The encoding process takes three bytes (24 bits) and splits them into four 6-bit groups. Each 6-bit value maps to one of 64 characters:</p>
+<pre><code>Input:  "Hi" → 01001000 01101001
+Split:  010010 000110 1001xx
+Padded: 010010 000110 100100
+Base64: S      G      k      =
+Result: "SGk="</code></pre>
+
+        <h2>Common Use Cases</h2>
+        <p><strong>Data URIs in HTML/CSS:</strong> Embed small images directly in your code without a separate HTTP request. Useful for icons under ~2KB.</p>
+<pre><code>&lt;img src="data:image/png;base64,iVBORw0KGgo..." /&gt;
+
+background-image: url(data:image/svg+xml;base64,PHN2Zy...);</code></pre>
+
+        <p><strong>HTTP Basic Authentication:</strong> The Authorization header sends credentials as Base64-encoded <code>username:password</code>.</p>
+<pre><code>Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+// Decodes to: username:password</code></pre>
+        <p>This is why Basic Auth must always use HTTPS — Base64 is trivially decoded.</p>
+
+        <p><strong>JWT Tokens:</strong> JSON Web Tokens use Base64URL encoding (replacing + with - and / with _) for the header and payload sections.</p>
+
+        <p><strong>Email Attachments (MIME):</strong> Binary attachments in emails are Base64-encoded because SMTP only supports 7-bit ASCII text.</p>
+
+        <p><strong>API Request Bodies:</strong> When sending binary data (images, files) in JSON payloads, Base64 encoding lets you include them as string values.</p>
+
+        <div class="blog-cta"><h3>Encode & Decode Base64 Instantly</h3><p>Convert text to Base64 and back, with URL-safe mode and UTF-8 support.</p><a href="../tools/base64-encoder.html">Open Base64 Encoder →</a></div>
+
+        <h2>Base64 vs Base64URL</h2>
+        <table>
+            <thead><tr><th>Feature</th><th>Standard Base64</th><th>Base64URL</th></tr></thead>
+            <tbody>
+                <tr><td>Characters 62-63</td><td><code>+</code> and <code>/</code></td><td><code>-</code> and <code>_</code></td></tr>
+                <tr><td>Padding</td><td>Required (<code>=</code>)</td><td>Often omitted</td></tr>
+                <tr><td>URL-safe</td><td>No (+ and / need escaping)</td><td>Yes</td></tr>
+                <tr><td>Used in</td><td>Email, data URIs, general</td><td>JWT, URL params, filenames</td></tr>
+            </tbody>
+        </table>
+
+        <h2>When NOT to Use Base64</h2>
+        <ul>
+            <li><strong>Storing passwords</strong> — Base64 is not encryption. Use bcrypt, scrypt or Argon2 for password hashing.</li>
+            <li><strong>Large files in HTML</strong> — Data URIs for images over ~5KB actually hurt performance. Use separate files.</li>
+            <li><strong>Sensitive data in URLs</strong> — Base64URL doesn't hide data. Use proper encryption.</li>
+            <li><strong>When binary transport is available</strong> — multipart/form-data, WebSockets binary frames and gRPC handle binary natively without the 33% size overhead.</li>
+        </ul>
+
+        <h2>Base64 in Every Language</h2>
+<pre><code>// JavaScript (browser)
+btoa("Hello World")        // "SGVsbG8gV29ybGQ="
+atob("SGVsbG8gV29ybGQ=")   // "Hello World"
+
+// JavaScript (Node.js)
+Buffer.from("Hello").toString("base64")
+Buffer.from("SGVsbG8=", "base64").toString()
+
+// Python
+import base64
+base64.b64encode(b"Hello")  # b'SGVsbG8='
+base64.b64decode(b"SGVsbG8=")
+
+// C#
+Convert.ToBase64String(Encoding.UTF8.GetBytes("Hello"))
+Encoding.UTF8.GetString(Convert.FromBase64String("SGVsbG8="))</code></pre>
+
+        <div class="blog-cta"><h3>Try the Base64 Encoder/Decoder</h3><p>Encode, decode and swap with URL-safe mode and UTF-8 support.</p><a href="../tools/base64-encoder.html">Open Base64 Encoder →</a></div>
+    </article>
+
+    <footer class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+</body>
+</html>

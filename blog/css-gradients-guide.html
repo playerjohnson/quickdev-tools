@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradients: A Visual Guide with Copy-Paste Examples (2026)</title>
+    <meta name="description" content="Master CSS linear, radial and conic gradients with practical examples. Includes 10 ready-to-use gradient presets you can copy-paste into your projects.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/blog/css-gradients-guide.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553969093740923" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GSVNXL004D"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-GSVNXL004D");</script>
+    <style>.gradient-demo{height:80px;border-radius:8px;margin:1em 0;border:1px solid var(--border)}</style>
+</head>
+<body>
+    <nav class="site-nav"><div class="nav-inner"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="./" class="active">Blog</a></li></ul><button class="nav-hamburger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></div></nav>
+
+    <div class="blog-article-hero"><h1>CSS Gradients: A Visual Guide with Copy-Paste Examples</h1><p class="meta">14 February 2026 · 7 min read</p></div>
+
+    <article class="blog-article">
+        <h2>Linear Gradients</h2>
+        <p>Linear gradients create a smooth transition between colours along a straight line. The simplest form needs just two colours — the browser handles the rest.</p>
+<pre><code>background: linear-gradient(to right, #667eea, #764ba2);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(to right,#667eea,#764ba2)"></div>
+
+        <p>You can control the direction with angles or keywords:</p>
+        <ul>
+            <li><code>to right</code> (or <code>90deg</code>) — left to right</li>
+            <li><code>to bottom</code> (or <code>180deg</code>) — top to bottom (default)</li>
+            <li><code>to bottom right</code> (or <code>135deg</code>) — diagonal</li>
+            <li><code>45deg</code> — custom angle, measured clockwise from top</li>
+        </ul>
+
+        <p><strong>Multiple colour stops:</strong></p>
+<pre><code>background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 50%,#4facfe 100%)"></div>
+
+        <h2>Radial Gradients</h2>
+        <p>Radial gradients radiate from a centre point outward. Great for spotlight effects, glowing buttons and vignettes.</p>
+<pre><code>background: radial-gradient(circle, #ff9a9e, #fad0c4);</code></pre>
+        <div class="gradient-demo" style="background:radial-gradient(circle,#ff9a9e,#fad0c4)"></div>
+
+        <p>Control the shape (<code>circle</code> vs <code>ellipse</code>) and position:</p>
+<pre><code>background: radial-gradient(ellipse at top left, #a18cd1, #fbc2eb);</code></pre>
+        <div class="gradient-demo" style="background:radial-gradient(ellipse at top left,#a18cd1,#fbc2eb)"></div>
+
+        <h2>Conic Gradients</h2>
+        <p>Conic gradients rotate colour transitions around a centre point — perfect for pie charts, colour wheels and decorative effects.</p>
+<pre><code>background: conic-gradient(#ff6b6b, #feca57, #48dbfb, #ff9ff3, #ff6b6b);</code></pre>
+        <div class="gradient-demo" style="background:conic-gradient(#ff6b6b,#feca57,#48dbfb,#ff9ff3,#ff6b6b)"></div>
+
+        <div class="blog-cta"><h3>Build Gradients Visually</h3><p>Pick colours, adjust direction and stops, and copy the CSS with one click.</p><a href="../tools/css-gradient-generator.html">Open Gradient Generator →</a></div>
+
+        <h2>10 Copy-Paste Gradient Presets</h2>
+
+        <p><strong>1. Ocean Blue</strong></p>
+<pre><code>background: linear-gradient(135deg, #667eea, #764ba2);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div>
+
+        <p><strong>2. Sunset</strong></p>
+<pre><code>background: linear-gradient(135deg, #f093fb, #f5576c);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(135deg,#f093fb,#f5576c)"></div>
+
+        <p><strong>3. Fresh Mint</strong></p>
+<pre><code>background: linear-gradient(135deg, #11998e, #38ef7d);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(135deg,#11998e,#38ef7d)"></div>
+
+        <p><strong>4. Warm Flame</strong></p>
+<pre><code>background: linear-gradient(45deg, #ff9a9e, #fad0c4);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(45deg,#ff9a9e,#fad0c4)"></div>
+
+        <p><strong>5. Night Fade</strong></p>
+<pre><code>background: linear-gradient(to top, #a18cd1, #fbc2eb);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(to top,#a18cd1,#fbc2eb)"></div>
+
+        <p><strong>6. Deep Space</strong></p>
+<pre><code>background: linear-gradient(to right, #000428, #004e92);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(to right,#000428,#004e92)"></div>
+
+        <p><strong>7. Peach</strong></p>
+<pre><code>background: linear-gradient(to right, #ed6ea0, #ec8c69);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(to right,#ed6ea0,#ec8c69)"></div>
+
+        <p><strong>8. Arctic</strong></p>
+<pre><code>background: linear-gradient(135deg, #74ebd5, #ACB6E5);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(135deg,#74ebd5,#ACB6E5)"></div>
+
+        <p><strong>9. Mojito</strong></p>
+<pre><code>background: linear-gradient(to top, #93F9B9, #1D976C);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(to top,#93F9B9,#1D976C)"></div>
+
+        <p><strong>10. Royal</strong></p>
+<pre><code>background: linear-gradient(to right, #141E30, #243B55);</code></pre>
+        <div class="gradient-demo" style="background:linear-gradient(to right,#141E30,#243B55)"></div>
+
+        <h2>Gradient Performance Tips</h2>
+        <ul>
+            <li><strong>CSS gradients are rendered by the GPU</strong> — they perform better than gradient images</li>
+            <li><strong>Avoid animating gradient colours directly</strong> — use opacity or transform tricks instead</li>
+            <li><strong>Use <code>background-size</code> for repeating patterns</strong> — smaller gradients tiled with <code>background-repeat</code> are efficient</li>
+            <li><strong>Combine gradients with <code>background-blend-mode</code></strong> for sophisticated effects without extra elements</li>
+        </ul>
+
+        <div class="blog-cta"><h3>Create Custom Gradients</h3><p>Linear, radial and conic gradients with live preview and one-click CSS copy.</p><a href="../tools/css-gradient-generator.html">Open Gradient Generator →</a></div>
+    </article>
+
+    <footer class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+</body>
+</html>
