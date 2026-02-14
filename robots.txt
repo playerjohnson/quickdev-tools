@@ -1,4 +1,4 @@
--e User-agent: *
+User-agent: *
 Allow: /
 
 Sitemap: https://playerjohnson.github.io/quickdev-tools/sitemap.xml
