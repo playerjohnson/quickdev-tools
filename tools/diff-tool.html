@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Diff Tool Online — Free Side-by-Side Text Comparison</title>
+    <meta name="description" content="Compare two texts and see differences highlighted line by line. Free online diff tool with side-by-side and unified views. No data sent to server.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/tools/diff-tool.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6553969093740923" crossorigin="anonymous"></script>
+    <style>
+        .diff-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .diff-inputs textarea { min-height: 220px; }
+        @media (max-width: 768px) { .diff-inputs { grid-template-columns: 1fr; } }
+
+        .diff-output { font-family: var(--mono); font-size: .82rem; line-height: 1.7; overflow: auto; min-height: 200px; padding: 0; }
+        .diff-line { display: flex; padding: 0 12px; border-bottom: 1px solid rgba(255,255,255,.03); }
+        .diff-line:hover { background: rgba(255,255,255,.03); }
+        .diff-ln { min-width: 38px; text-align: right; padding-right: 10px; color: var(--text-dim); user-select: none; flex-shrink: 0; opacity: .6; }
+        .diff-text { white-space: pre-wrap; word-break: break-all; flex: 1; padding: 0 4px; }
+        .diff-prefix { display: inline-block; width: 18px; user-select: none; flex-shrink: 0; font-weight: 600; text-align: center; }
+
+        .diff-add { background: rgba(34,197,94,.1); }
+        .diff-add .diff-prefix { color: #22c55e; }
+        .diff-add .diff-text { color: #86efac; }
+        .diff-del { background: rgba(239,68,68,.1); }
+        .diff-del .diff-prefix { color: #ef4444; }
+        .diff-del .diff-text { color: #fca5a5; }
+        .diff-eq .diff-prefix { color: var(--text-dim); }
+        .diff-eq .diff-text { color: var(--text-dim); }
+
+        .diff-word-add { background: rgba(34,197,94,.25); border-radius: 2px; color: #bbf7d0; }
+        .diff-word-del { background: rgba(239,68,68,.25); border-radius: 2px; color: #fecaca; }
+
+        /* Side-by-side mode */
+        .diff-sbs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+        .diff-sbs .diff-side { overflow: auto; }
+        .diff-sbs .diff-side + .diff-side { border-left: 1px solid var(--border); }
+
+        .diff-stats { display: flex; gap: 16px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--border); font-size: .78rem; color: var(--text-dim); }
+        .diff-stats span { display: flex; align-items: center; gap: 4px; }
+        .stat-add { color: #22c55e !important; }
+        .stat-del { color: #ef4444 !important; }
+
+        .view-toggle { display: flex; gap: 4px; }
+    </style>
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GSVNXL004D"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-GSVNXL004D");</script>
+</head>
+<body>
+    <nav class="site-nav"><div class="nav-inner">
+        <a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a>
+        <ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="../blog/">Blog</a></li></ul>
+        <button class="nav-hamburger" aria-label="Toggle menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    </div></nav>
+
+    <div class="tool-hero">
+        <h1>Text Diff Tool</h1>
+        <p>Compare two blocks of text and see the differences highlighted line by line</p>
+    </div>
+
+    <div class="tool-container wide">
+        <div class="flex items-center justify-between mb-md" style="flex-wrap:wrap;gap:10px">
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" onclick="runDiff()">Compare</button>
+                <button class="btn btn-secondary btn-sm" onclick="copyDiff()">Copy Diff</button>
+                <button class="btn btn-secondary btn-sm" onclick="swapInputs()">Swap</button>
+                <button class="btn btn-secondary btn-sm" onclick="clearAll()">Clear</button>
+            </div>
+            <div class="flex items-center gap-sm">
+                <label style="margin:0;text-transform:none;font-size:.8rem">View:</label>
+                <div class="view-toggle">
+                    <button class="tab active" data-view="unified" onclick="setView('unified',this)">Unified</button>
+                    <button class="tab" data-view="side" onclick="setView('side',this)">Side by Side</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="diff-inputs">
+            <div class="panel">
+                <div class="panel-header"><span>Original</span><span class="text-mono" id="leftSize">0 lines</span></div>
+                <textarea id="leftInput" placeholder="Paste original text here..." spellcheck="false"></textarea>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><span>Modified</span><span class="text-mono" id="rightSize">0 lines</span></div>
+                <textarea id="rightInput" placeholder="Paste modified text here..." spellcheck="false"></textarea>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header"><span>Differences</span><span id="statusBadge"></span></div>
+            <div class="diff-output" id="diffOutput">Diff output will appear here...</div>
+            <div class="diff-stats" id="diffStats"></div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>How to Use</h2>
+        <p>Paste the original text on the left and the modified text on the right, then click <code>Compare</code>. Lines that were added appear in green, lines removed appear in red, and unchanged lines are dimmed for context. Changed words within a line are highlighted inline for precision.</p>
+
+        <h2>What This Tool Does</h2>
+        <p>This diff tool uses a longest common subsequence (LCS) algorithm to compute the minimal set of changes between two texts. It supports unified and side-by-side views, highlights intra-line word differences, and provides statistics on additions, deletions and unchanged lines.</p>
+
+        <h2>Is My Data Safe?</h2>
+        <p>Yes. The comparison runs entirely in your browser with JavaScript. Your text is never sent to any server. There's no backend, no API call, no logging. You can verify this by opening your browser's network tab.</p>
+
+        <h2>When to Use a Diff Tool</h2>
+        <p>Diff tools are essential for reviewing code changes, comparing configuration files, checking document revisions, verifying data migrations, and debugging unexpected output changes. They help you quickly spot what changed, what was added, and what was removed.</p>
+    </div>
+
+    <footer class="site-footer"><div class="footer-inner">
+        <div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. Client-side only.</p></div>
+        <div class="footer-col"><h4>Tools</h4><ul>
+            <li><a href="json-formatter.html">JSON Formatter</a></li>
+            <li><a href="regex-tester.html">Regex Tester</a></li>
+            <li><a href="base64-encoder.html">Base64 Encode/Decode</a></li>
+            <li><a href="xml-formatter.html">XML Formatter</a></li>
+            <li><a href="diff-tool.html">Text Diff Tool</a></li>
+        </ul></div>
+    </div><div class="footer-bottom"><p>All tools run client-side. Your data never leaves your browser. <a href="../privacy.html" style="color:var(--text-dim);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-dim);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+    <script>
+    /* ── State ── */
+    let viewMode = 'unified';
+    const leftInput = document.getElementById('leftInput');
+    const rightInput = document.getElementById('rightInput');
+    const diffOutput = document.getElementById('diffOutput');
+    const diffStats = document.getElementById('diffStats');
+    const badge = document.getElementById('statusBadge');
+    const leftSize = document.getElementById('leftSize');
+    const rightSize = document.getElementById('rightSize');
+
+    /* ── LCS Diff Algorithm ── */
+    function lcs(a, b) {
+        const m = a.length, n = b.length;
+        const dp = Array.from({ length: m + 1 }, () => new Uint16Array(n + 1));
+        for (let i = 1; i <= m; i++)
+            for (let j = 1; j <= n; j++)
+                dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+
+        const result = [];
+        let i = m, j = n;
+        while (i > 0 && j > 0) {
+            if (a[i - 1] === b[j - 1]) {
+                result.unshift({ type: 'eq', left: i, right: j, text: a[i - 1] });
+                i--; j--;
+            } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+                result.unshift({ type: 'del', left: i, text: a[i - 1] });
+                i--;
+            } else {
+                result.unshift({ type: 'add', right: j, text: b[j - 1] });
+                j--;
+            }
+        }
+        while (i > 0) { result.unshift({ type: 'del', left: i, text: a[i - 1] }); i--; }
+        while (j > 0) { result.unshift({ type: 'add', right: j, text: b[j - 1] }); j--; }
+        return result;
+    }
+
+    /* ── Word-level diff for modified lines ── */
+    function wordDiff(oldLine, newLine) {
+        const oldWords = oldLine.split(/(\s+)/);
+        const newWords = newLine.split(/(\s+)/);
+        const ops = lcs(oldWords, newWords);
+        let oldHtml = '', newHtml = '';
+        for (const op of ops) {
+            const esc = QD.escHtml(op.text);
+            if (op.type === 'eq') { oldHtml += esc; newHtml += esc; }
+            else if (op.type === 'del') { oldHtml += `<span class="diff-word-del">${esc}</span>`; }
+            else { newHtml += `<span class="diff-word-add">${esc}</span>`; }
+        }
+        return { oldHtml, newHtml };
+    }
+
+    /* ── Group consecutive del/add as modifications ── */
+    function pairModifications(ops) {
+        const result = [];
+        let i = 0;
+        while (i < ops.length) {
+            if (ops[i].type === 'del') {
+                const dels = [];
+                while (i < ops.length && ops[i].type === 'del') dels.push(ops[i++]);
+                const adds = [];
+                while (i < ops.length && ops[i].type === 'add') adds.push(ops[i++]);
+                const pairs = Math.min(dels.length, adds.length);
+                for (let p = 0; p < pairs; p++) {
+                    const wd = wordDiff(dels[p].text, adds[p].text);
+                    result.push({ type: 'mod', left: dels[p].left, right: adds[p].right, oldHtml: wd.oldHtml, newHtml: wd.newHtml });
+                }
+                for (let p = pairs; p < dels.length; p++) result.push(dels[p]);
+                for (let p = pairs; p < adds.length; p++) result.push(adds[p]);
+            } else {
+                result.push(ops[i++]);
+            }
+        }
+        return result;
+    }
+
+    /* ── Render Unified View ── */
+    function renderUnified(ops) {
+        return ops.map(op => {
+            if (op.type === 'eq') {
+                return line('diff-eq', op.left, op.right, ' ', QD.escHtml(op.text));
+            } else if (op.type === 'del') {
+                return line('diff-del', op.left, '', '−', QD.escHtml(op.text));
+            } else if (op.type === 'add') {
+                return line('diff-add', '', op.right, '+', QD.escHtml(op.text));
+            } else { /* mod */
+                return line('diff-del', op.left, '', '−', op.oldHtml) +
+                       line('diff-add', '', op.right, '+', op.newHtml);
+            }
+        }).join('');
+    }
+
+    function line(cls, ln1, ln2, prefix, html) {
+        return `<div class="diff-line ${cls}"><span class="diff-ln">${ln1}</span><span class="diff-ln">${ln2}</span><span class="diff-prefix">${prefix}</span><span class="diff-text">${html}</span></div>`;
+    }
+
+    /* ── Render Side-by-Side View ── */
+    function renderSideBySide(ops) {
+        let leftHtml = '', rightHtml = '';
+        for (const op of ops) {
+            if (op.type === 'eq') {
+                leftHtml += sideLine('diff-eq', op.left, ' ', QD.escHtml(op.text));
+                rightHtml += sideLine('diff-eq', op.right, ' ', QD.escHtml(op.text));
+            } else if (op.type === 'del') {
+                leftHtml += sideLine('diff-del', op.left, '−', QD.escHtml(op.text));
+                rightHtml += sideLine('diff-eq', '', ' ', '');
+            } else if (op.type === 'add') {
+                leftHtml += sideLine('diff-eq', '', ' ', '');
+                rightHtml += sideLine('diff-add', op.right, '+', QD.escHtml(op.text));
+            } else { /* mod */
+                leftHtml += sideLine('diff-del', op.left, '−', op.oldHtml);
+                rightHtml += sideLine('diff-add', op.right, '+', op.newHtml);
+            }
+        }
+        return `<div class="diff-sbs"><div class="diff-side">${leftHtml}</div><div class="diff-side">${rightHtml}</div></div>`;
+    }
+
+    function sideLine(cls, ln, prefix, html) {
+        return `<div class="diff-line ${cls}"><span class="diff-ln">${ln}</span><span class="diff-prefix">${prefix}</span><span class="diff-text">${html}</span></div>`;
+    }
+
+    /* ── Main Diff Runner ── */
+    function runDiff() {
+        const a = leftInput.value.split('\n');
+        const b = rightInput.value.split('\n');
+
+        if (!leftInput.value && !rightInput.value) {
+            diffOutput.textContent = 'Paste text in both panels and click Compare...';
+            badge.innerHTML = '';
+            diffStats.innerHTML = '';
+            return;
+        }
+
+        const raw = lcs(a, b);
+        const ops = pairModifications(raw);
+
+        if (viewMode === 'unified') {
+            diffOutput.innerHTML = renderUnified(ops);
+        } else {
+            diffOutput.innerHTML = renderSideBySide(ops);
+        }
+
+        const added = ops.filter(o => o.type === 'add').length;
+        const deleted = ops.filter(o => o.type === 'del').length;
+        const modified = ops.filter(o => o.type === 'mod').length;
+        const unchanged = ops.filter(o => o.type === 'eq').length;
+        const total = added + deleted + modified + unchanged;
+
+        if (added === 0 && deleted === 0 && modified === 0) {
+            badge.innerHTML = '<span style="color:var(--green)">✓ Identical</span>';
+        } else {
+            badge.innerHTML = `<span style="color:var(--text-dim)">${added + deleted + modified * 2} change${(added + deleted + modified * 2) !== 1 ? 's' : ''}</span>`;
+        }
+
+        diffStats.innerHTML = `
+            <span class="stat-add">+${added + modified} added</span>
+            <span class="stat-del">−${deleted + modified} removed</span>
+            <span>${unchanged} unchanged</span>
+            <span>Total: ${a.length} → ${b.length} lines</span>`;
+    }
+
+    /* ── UI Actions ── */
+    function setView(mode, btn) {
+        viewMode = mode;
+        document.querySelectorAll('.view-toggle .tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        if (leftInput.value || rightInput.value) runDiff();
+    }
+
+    function swapInputs() {
+        const tmp = leftInput.value;
+        leftInput.value = rightInput.value;
+        rightInput.value = tmp;
+        updateCounts();
+        if (leftInput.value || rightInput.value) runDiff();
+    }
+
+    function copyDiff() {
+        const text = diffOutput.textContent || diffOutput.innerText;
+        QD.copy(text, document.querySelector('[onclick="copyDiff()"]'));
+    }
+
+    function clearAll() {
+        leftInput.value = '';
+        rightInput.value = '';
+        diffOutput.textContent = 'Diff output will appear here...';
+        badge.innerHTML = '';
+        diffStats.innerHTML = '';
+        leftSize.textContent = '0 lines';
+        rightSize.textContent = '0 lines';
+    }
+
+    function updateCounts() {
+        leftSize.textContent = (leftInput.value ? leftInput.value.split('\n').length : 0) + ' lines';
+        rightSize.textContent = (rightInput.value ? rightInput.value.split('\n').length : 0) + ' lines';
+    }
+
+    /* ── Event Listeners ── */
+    leftInput.addEventListener('input', QD.debounce(updateCounts, 200));
+    rightInput.addEventListener('input', QD.debounce(updateCounts, 200));
+    </script>
+</body>
+</html>
