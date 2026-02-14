@@ -11,6 +11,7 @@
         { id:'css-gradient', name:'CSS Gradient Generator', desc:'Create beautiful CSS gradients with live preview and code output', icon:'◐', color:'#a855f7', href:'tools/css-gradient-generator.html', tag:'' },
         { id:'cron-builder', name:'Cron Expression Builder', desc:'Build and decode cron expressions with plain English descriptions', icon:'⏱', color:'#06b6d4', href:'tools/cron-builder.html', tag:'' },
         { id:'colour-palette', name:'Colour Palette Generator', desc:'Generate harmonious colour palettes with hex, RGB & HSL values', icon:'◆', color:'#ec4899', href:'tools/colour-palette.html', tag:'' },
+        { id:'diff-tool', name:'Text Diff Tool', desc:'Compare two texts and see differences highlighted line by line', icon:'±', color:'#f43f5e', href:'tools/diff-tool.html', tag:'' },
     ];
 
     /* ── Navigation ── */
