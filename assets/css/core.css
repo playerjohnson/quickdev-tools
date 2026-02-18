@@ -302,3 +302,25 @@ label { display: block; margin-bottom: 6px; font-family: var(--display); font-si
     transition: all .2s; box-shadow: 0 2px 12px rgba(195,247,58,.2);
 }
 .blog-cta a:hover { background: var(--accent-hover); box-shadow: 0 4px 20px rgba(195,247,58,.35); transform: translateY(-1px); }
+
+/* ── Enhanced Animations (Feb 2026 refresh) ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(195,247,58,.05); } 50% { box-shadow: 0 0 30px rgba(195,247,58,.12); } }
+.fade-up { animation: fadeUp .5s ease both; }
+.fade-up-d1 { animation-delay: .08s; }
+.fade-up-d2 { animation-delay: .16s; }
+
+/* ── Improved card hover ── */
+.tool-card { transition: all .28s cubic-bezier(.4,0,.2,1); }
+.tool-card:hover { transform: translateY(-5px) scale(1.005); box-shadow: 0 12px 32px rgba(0,0,0,.3), 0 0 0 1px var(--accent); }
+
+/* ── Blog card hover ── */
+.blog-card { transition: all .25s ease; }
+.blog-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.25); border-color: var(--accent); }
+
+/* ── Nav subtle glow ── */
+.site-nav { box-shadow: 0 1px 0 rgba(195,247,58,.06); }
+
+/* ── Footer contact ── */
+.footer-bottom a { transition: color .15s; }
+.footer-bottom a:hover { color: var(--accent); }
