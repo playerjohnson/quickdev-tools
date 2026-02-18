@@ -3,115 +3,228 @@
 <head>
     <meta charset="UTF-8">    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Gradients: A Visual Guide with Copy-Paste Examples (2026)</title>
-    <meta name="description" content="Master CSS linear, radial and conic gradients with practical examples. Includes 10 ready-to-use gradient presets you can copy-paste into your projects.">
+    <title>CSS Gradients: Complete Guide to Linear, Radial and Conic Gradients (2026)</title>
+    <meta name="description" content="Master CSS gradients with practical examples. Covers linear, radial and conic gradients, colour stops, transparency, animation, performance and 10 copy-paste presets.">
     <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/blog/css-gradients-guide.html">
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/core.css">
-<style>.gradient-demo{height:80px;border-radius:8px;margin:1em 0;border:1px solid var(--border)}</style>
 </head>
 <body>
 <!-- GTM noscript --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54K98MWX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;font-family:-apple-system,system-ui,sans-serif;" onfocus="this.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);width:auto;height:auto;overflow:visible;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;border-radius:4px;font-family:-apple-system,system-ui,sans-serif;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
     <nav role="navigation" aria-label="Main" class="site-nav"><div class="nav-inner"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="./" class="active">Blog</a></li></ul><button class="nav-hamburger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></div></nav>
 
-    <div class="blog-article-hero"><h1>CSS Gradients: A Visual Guide with Copy-Paste Examples</h1><p class="meta">14 February 2026 · 7 min read</p></div>
+    <div class="blog-article-hero"><h1>CSS Gradients: Complete Guide to Linear, Radial and Conic Gradients</h1><p class="meta">14 February 2026 · 14 min read</p></div>
 
     <article class="blog-article">
+        <p>CSS gradients are one of the most underused tools in a frontend developer's arsenal. They eliminate the need for gradient images, reduce HTTP requests, scale perfectly at any resolution, and are rendered by the GPU. Yet most developers stick to flat background colours because gradient syntax feels unintuitive. This guide covers everything from basic two-colour transitions to animated gradient effects and practical design patterns.</p>
+
         <h2>Linear Gradients</h2>
-        <p>Linear gradients create a smooth transition between colours along a straight line. The simplest form needs just two colours — the browser handles the rest.</p>
+        <p>Linear gradients create a smooth transition between colours along a straight line. The simplest form needs just two colours — the browser calculates the transition automatically.</p>
 <pre><code>background: linear-gradient(to right, #667eea, #764ba2);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(to right,#667eea,#764ba2)"></div>
+        <p>You control direction with angles or keywords. Angles are measured clockwise from the top, so <code>0deg</code> points straight up, <code>90deg</code> points right, and <code>180deg</code> points down (the default).</p>
+        <table>
+            <thead><tr><th>Direction</th><th>Angle</th><th>Effect</th></tr></thead>
+            <tbody>
+                <tr><td><code>to top</code></td><td><code>0deg</code></td><td>Bottom to top</td></tr>
+                <tr><td><code>to right</code></td><td><code>90deg</code></td><td>Left to right</td></tr>
+                <tr><td><code>to bottom</code></td><td><code>180deg</code></td><td>Top to bottom (default)</td></tr>
+                <tr><td><code>to left</code></td><td><code>270deg</code></td><td>Right to left</td></tr>
+                <tr><td><code>to bottom right</code></td><td><code>135deg</code></td><td>Top-left to bottom-right diagonal</td></tr>
+            </tbody>
+        </table>
 
-        <p>You can control the direction with angles or keywords:</p>
-        <ul>
-            <li><code>to right</code> (or <code>90deg</code>) — left to right</li>
-            <li><code>to bottom</code> (or <code>180deg</code>) — top to bottom (default)</li>
-            <li><code>to bottom right</code> (or <code>135deg</code>) — diagonal</li>
-            <li><code>45deg</code> — custom angle, measured clockwise from top</li>
-        </ul>
+        <h3>Colour Stops</h3>
+        <p>Colour stops let you control exactly where each colour begins and ends. Without explicit stops, colours are distributed evenly. With stops, you can create sharp transitions, weighted blends, and complex multi-colour patterns.</p>
+<pre><code>/* Even distribution (default) */
+background: linear-gradient(135deg, #f093fb, #f5576c, #4facfe);
 
-        <p><strong>Multiple colour stops:</strong></p>
-<pre><code>background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 50%,#4facfe 100%)"></div>
+/* Explicit stops — purple dominates */
+background: linear-gradient(135deg, #f093fb 0%, #f5576c 70%, #4facfe 100%);
+
+/* Sharp colour change — no transition */
+background: linear-gradient(to right, #667eea 50%, #764ba2 50%);</code></pre>
+        <p>The sharp transition trick — setting two adjacent stops at the same percentage — is incredibly useful for creating stripes, flags, progress bars and split-colour backgrounds without any images.</p>
+
+        <h3>Repeating Linear Gradients</h3>
+        <p>The <code>repeating-linear-gradient()</code> function tiles the gradient pattern. This is how you create stripes and diagonal patterns purely in CSS.</p>
+<pre><code>/* Diagonal stripes */
+background: repeating-linear-gradient(
+  45deg,
+  #606dbc,
+  #606dbc 10px,
+  #465298 10px,
+  #465298 20px
+);</code></pre>
 
         <h2>Radial Gradients</h2>
-        <p>Radial gradients radiate from a centre point outward. Great for spotlight effects, glowing buttons and vignettes.</p>
+        <p>Radial gradients radiate outward from a centre point. They are perfect for spotlight effects, glowing buttons, vignettes and decorative backgrounds.</p>
 <pre><code>background: radial-gradient(circle, #ff9a9e, #fad0c4);</code></pre>
-        <div class="gradient-demo" style="background:radial-gradient(circle,#ff9a9e,#fad0c4)"></div>
+        <p>You can control the shape (circle or ellipse), size and position:</p>
+<pre><code>/* Ellipse positioned at top-left */
+background: radial-gradient(ellipse at top left, #a18cd1, #fbc2eb);
 
-        <p>Control the shape (<code>circle</code> vs <code>ellipse</code>) and position:</p>
-<pre><code>background: radial-gradient(ellipse at top left, #a18cd1, #fbc2eb);</code></pre>
-        <div class="gradient-demo" style="background:radial-gradient(ellipse at top left,#a18cd1,#fbc2eb)"></div>
+/* Specific size */
+background: radial-gradient(circle 200px at center, #ff6b6b, transparent);
+
+/* Size keywords */
+background: radial-gradient(closest-side at 30% 70%, #48dbfb, #fad0c4);</code></pre>
+        <p>The size keywords — <code>closest-side</code>, <code>farthest-side</code>, <code>closest-corner</code>, <code>farthest-corner</code> — determine how the gradient scales relative to the element and the centre position. <code>farthest-corner</code> is the default and usually what you want.</p>
 
         <h2>Conic Gradients</h2>
-        <p>Conic gradients rotate colour transitions around a centre point — perfect for pie charts, colour wheels and decorative effects.</p>
-<pre><code>background: conic-gradient(#ff6b6b, #feca57, #48dbfb, #ff9ff3, #ff6b6b);</code></pre>
-        <div class="gradient-demo" style="background:conic-gradient(#ff6b6b,#feca57,#48dbfb,#ff9ff3,#ff6b6b)"></div>
+        <p>Conic gradients rotate colour transitions around a centre point, like the sweep of a clock hand. They are the newest of the three types and perfect for pie charts, colour wheels and decorative effects.</p>
+<pre><code>/* Colour wheel */
+background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
 
-        <div class="blog-cta"><h3>Build Gradients Visually</h3><p>Pick colours, adjust direction and stops, and copy the CSS with one click.</p><a href="../tools/css-gradient-generator.html">Open Gradient Generator →</a></div>
+/* Pie chart */
+background: conic-gradient(#ff6b6b 0% 35%, #feca57 35% 65%, #48dbfb 65% 100%);
+
+/* From a specific angle */
+background: conic-gradient(from 90deg, #667eea, #764ba2);</code></pre>
+        <p>Conic gradients with hard stops create pie chart segments without any JavaScript. Combined with <code>border-radius: 50%</code>, you get a perfect circular chart in pure CSS.</p>
+
+        <div class="blog-cta"><h3>Build Gradients Visually</h3><p>Pick colours, adjust direction and stops, and copy the CSS with one click.</p><a href="../tools/css-gradient-generator.html">Open Gradient Generator &rarr;</a></div>
+
+        <h2>Transparency and Layering</h2>
+        <p>Gradients support transparency through <code>rgba()</code>, <code>hsla()</code> or the <code>transparent</code> keyword. This opens up layering possibilities that are impossible with flat colours.</p>
+<pre><code>/* Fade to transparent */
+background: linear-gradient(to bottom, #667eea, transparent);
+
+/* Overlay on image */
+background:
+  linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.3)),
+  url('hero.jpg') center/cover;</code></pre>
+        <p>Layering a semi-transparent gradient over a background image is one of the most common patterns in modern web design. It ensures text remains readable regardless of the image content. The gradient goes first in the <code>background</code> shorthand because CSS paints layers from top to bottom.</p>
+        <p>You can also layer multiple gradients to create complex patterns. Each gradient layer is separated by a comma:</p>
+<pre><code>/* Cross-hatch pattern */
+background:
+  repeating-linear-gradient(0deg, transparent, transparent 49px, #ccc 49px, #ccc 50px),
+  repeating-linear-gradient(90deg, transparent, transparent 49px, #ccc 49px, #ccc 50px);</code></pre>
 
         <h2>10 Copy-Paste Gradient Presets</h2>
 
         <p><strong>1. Ocean Blue</strong></p>
 <pre><code>background: linear-gradient(135deg, #667eea, #764ba2);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div>
 
         <p><strong>2. Sunset</strong></p>
 <pre><code>background: linear-gradient(135deg, #f093fb, #f5576c);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(135deg,#f093fb,#f5576c)"></div>
 
         <p><strong>3. Fresh Mint</strong></p>
 <pre><code>background: linear-gradient(135deg, #11998e, #38ef7d);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(135deg,#11998e,#38ef7d)"></div>
 
         <p><strong>4. Warm Flame</strong></p>
 <pre><code>background: linear-gradient(45deg, #ff9a9e, #fad0c4);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(45deg,#ff9a9e,#fad0c4)"></div>
 
         <p><strong>5. Night Fade</strong></p>
 <pre><code>background: linear-gradient(to top, #a18cd1, #fbc2eb);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(to top,#a18cd1,#fbc2eb)"></div>
 
         <p><strong>6. Deep Space</strong></p>
 <pre><code>background: linear-gradient(to right, #000428, #004e92);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(to right,#000428,#004e92)"></div>
 
         <p><strong>7. Peach</strong></p>
 <pre><code>background: linear-gradient(to right, #ed6ea0, #ec8c69);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(to right,#ed6ea0,#ec8c69)"></div>
 
         <p><strong>8. Arctic</strong></p>
 <pre><code>background: linear-gradient(135deg, #74ebd5, #ACB6E5);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(135deg,#74ebd5,#ACB6E5)"></div>
 
         <p><strong>9. Mojito</strong></p>
 <pre><code>background: linear-gradient(to top, #93F9B9, #1D976C);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(to top,#93F9B9,#1D976C)"></div>
 
         <p><strong>10. Royal</strong></p>
 <pre><code>background: linear-gradient(to right, #141E30, #243B55);</code></pre>
-        <div class="gradient-demo" style="background:linear-gradient(to right,#141E30,#243B55)"></div>
 
-        <h2>Gradient Performance Tips</h2>
-        <ul>
-            <li><strong>CSS gradients are rendered by the GPU</strong> — they perform better than gradient images</li>
-            <li><strong>Avoid animating gradient colours directly</strong> — use opacity or transform tricks instead</li>
-            <li><strong>Use <code>background-size</code> for repeating patterns</strong> — smaller gradients tiled with <code>background-repeat</code> are efficient</li>
-            <li><strong>Combine gradients with <code>background-blend-mode</code></strong> for sophisticated effects without extra elements</li>
-        </ul>
+        <h2>Animated Gradients</h2>
+        <p>CSS cannot animate gradient colour values directly, but you can achieve smooth gradient animations using <code>background-size</code> and <code>background-position</code>:</p>
+<pre><code>.animated-gradient {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
 
-        <div class="blog-cta"><h3>Create Custom Gradients</h3><p>Linear, radial and conic gradients with live preview and one-click CSS copy.</p><a href="../tools/css-gradient-generator.html">Open Gradient Generator →</a></div>
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}</code></pre>
+        <p>This technique creates a flowing, organic feel and is widely used for hero sections, loading states and decorative backgrounds. The oversized <code>background-size</code> creates more gradient than the element needs, and the animation pans across it.</p>
+        <p>For more performant gradient animations, you can also use the <code>@property</code> rule to register custom properties that CSS can interpolate:</p>
+<pre><code>@property --gradient-angle {
+  syntax: '&lt;angle&gt;';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.rotating-gradient {
+  background: conic-gradient(from var(--gradient-angle), #667eea, #764ba2, #667eea);
+  animation: rotate-gradient 3s linear infinite;
+}
+
+@keyframes rotate-gradient {
+  to { --gradient-angle: 360deg; }
+}</code></pre>
+
+        <h2>Gradient Performance</h2>
+        <p>CSS gradients are rendered by the GPU and generally perform well. However, there are situations where performance matters:</p>
+        <p><strong>Gradients vs images:</strong> A CSS gradient is always smaller than a gradient image file, loads instantly without an HTTP request, and scales perfectly on retina displays. Prefer gradients whenever the visual effect can be achieved with CSS.</p>
+        <p><strong>Complex gradients on scroll:</strong> Animating gradients during scroll events can cause jank. If you need gradient changes on scroll, use <code>will-change: background</code> to hint to the browser, or pre-render the gradient and animate <code>opacity</code> instead.</p>
+        <p><strong>Large elements:</strong> On very large elements (full-viewport backgrounds), complex gradients with many colour stops render without issues on modern hardware. But on older mobile devices, more than 8-10 colour stops can cause visible rendering delays.</p>
+        <p><strong>Border gradients:</strong> CSS <code>border-image</code> with gradients has inconsistent rendering across browsers. A more reliable approach is using a pseudo-element with the gradient as a background and the main element on top with a solid background, creating a "border" effect through padding or sizing.</p>
+
+        <h2>Gradient Text</h2>
+        <p>Applying gradients to text requires a combination of properties:</p>
+<pre><code>.gradient-text {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}</code></pre>
+        <p>This technique clips the gradient background to the text shape, creating the appearance of gradient-coloured text. The <code>color: transparent</code> fallback ensures the text is not double-rendered in browsers that do not support <code>-webkit-text-fill-color</code>.</p>
+
+        <h2>Browser Support and Fallbacks</h2>
+        <p>Linear and radial gradients have excellent browser support — effectively 100% of modern browsers. Conic gradients are supported in all evergreen browsers but may need a fallback for older versions. The <code>@property</code> rule for gradient animation is newer and requires Chrome 85+, Edge 85+, Safari 15.4+ or Firefox 128+.</p>
+        <p>Always provide a solid colour fallback before any gradient declaration:</p>
+<pre><code>.hero {
+  background: #667eea; /* Fallback */
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}</code></pre>
+
+        <h2>Practical Design Patterns</h2>
+        <p>Beyond decorative backgrounds, gradients solve real design problems. Here are patterns you will use in production.</p>
+        <p><strong>Scroll fade:</strong> A gradient overlay at the bottom of a scrollable container hints that more content exists below. Apply a transparent-to-background gradient on a pseudo-element positioned at the bottom of the container.</p>
+<pre><code>.scroll-container::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 40px;
+  background: linear-gradient(transparent, white);
+  pointer-events: none;
+}</code></pre>
+        <p><strong>Card hover effect:</strong> A gradient border that appears on hover creates an elegant interactive state without changing layout. Use a background gradient on the card with padding, and a solid inner background to reveal the gradient edges.</p>
+        <p><strong>Section dividers:</strong> Instead of flat horizontal rules, a gradient that fades from transparent to a colour and back creates a softer visual break between page sections. This looks more polished than a solid <code>border-bottom</code> and takes one line of CSS.</p>
+        <p><strong>Loading skeleton:</strong> Animated gradients make excellent skeleton loading states. A shimmer effect using <code>background-size: 200%</code> with a linear gradient animation gives users a visual cue that content is loading, performing better than spinner animations for content-heavy layouts.</p>
+
+        <h2>Accessibility Considerations</h2>
+        <p>Gradients can create accessibility problems if text sits on top of them. A gradient that transitions from dark to light may have excellent contrast at one end and failing contrast at the other. Always check contrast ratios at the weakest point of the gradient — the lightest colour behind the darkest text, or vice versa.</p>
+        <p>For text on gradient backgrounds, a semi-transparent overlay between the gradient and text ensures consistent readability. Alternatively, use a text shadow or a solid background behind the text element itself rather than relying on the gradient alone for contrast.</p>
+        <p>Animated gradients should respect the <code>prefers-reduced-motion</code> media query. Some users find continuous motion distracting or nauseating. Wrap gradient animations in a motion preference check:</p>
+<pre><code>@media (prefers-reduced-motion: no-preference) {
+  .animated-gradient {
+    animation: gradient-shift 15s ease infinite;
+  }
+}</code></pre>
+
+        <div class="blog-cta"><h3>Build Your Own Gradient</h3><p>Visual editor with live preview, angle control and one-click CSS copy. No signup needed.</p><a href="../tools/css-gradient-generator.html">Open Gradient Generator &rarr;</a></div>
     </article>
 
-    <footer role="contentinfo" class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+    <footer role="contentinfo" class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> &copy; 2026 QuickDev Tools.</p></div></footer>
     <script src="../assets/js/core.js"></script>
 <script src="../cookie-consent.js"></script>
-<!-- Freelance Dev Promo -->
 <div style="background:#111827;border-top:1px solid #1e293b;padding:14px 24px;text-align:center;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
   <span style="color:#94a3b8;">Need a developer?</span>
-  <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#f59e0b;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson — Senior .NET & Azure Developer →</a>
+  <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#f59e0b;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson &mdash; Senior .NET & Azure Developer &rarr;</a>
 </div>
 </body>
 </html>
