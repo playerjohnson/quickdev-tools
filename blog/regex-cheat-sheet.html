@@ -4,7 +4,7 @@
     <meta charset="UTF-8">    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regex Cheat Sheet: 20 Common Patterns Every Developer Needs (2026)</title>
-    <meta name="description" content="Copy-paste regex patterns for emails, URLs, dates, phone numbers, IP addresses, passwords and more. Each pattern explained with examples and test cases.">
+    <meta name="description" content="Copy-paste regex patterns for emails, URLs, dates, phone numbers, IP addresses, passwords and more. Each pattern explained with examples, test cases and practical tips.">
     <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/blog/regex-cheat-sheet.html">
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -15,127 +15,176 @@
 <a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;font-family:-apple-system,system-ui,sans-serif;" onfocus="this.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);width:auto;height:auto;overflow:visible;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;border-radius:4px;font-family:-apple-system,system-ui,sans-serif;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
     <nav role="navigation" aria-label="Main" class="site-nav"><div class="nav-inner"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="./" class="active">Blog</a></li></ul><button class="nav-hamburger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></div></nav>
 
-    <div class="blog-article-hero"><h1>Regex Cheat Sheet: 20 Common Patterns Every Developer Needs</h1><p class="meta">14 February 2026 · 10 min read</p></div>
+    <div class="blog-article-hero"><h1>Regex Cheat Sheet: 20 Common Patterns Every Developer Needs</h1><p class="meta">14 February 2026 · 14 min read</p></div>
 
     <article class="blog-article">
+        <p>Regular expressions are one of those tools that sit awkwardly between essential and arcane. You use them constantly — in form validation, log parsing, search-and-replace, data cleaning — yet the syntax remains cryptic no matter how many times you look it up. This cheat sheet gives you 20 battle-tested patterns you can copy directly into your code, along with the understanding to modify them confidently.</p>
+
         <h2>Quick Reference: Regex Metacharacters</h2>
+        <p>These are the building blocks. Every pattern below is composed from these elements.</p>
         <table>
             <thead><tr><th>Character</th><th>Meaning</th><th>Example</th></tr></thead>
             <tbody>
-                <tr><td><code>.</code></td><td>Any character except newline</td><td><code>a.c</code> matches "abc", "a1c"</td></tr>
-                <tr><td><code>^</code></td><td>Start of string</td><td><code>^Hello</code> matches "Hello world"</td></tr>
-                <tr><td><code>$</code></td><td>End of string</td><td><code>world$</code> matches "Hello world"</td></tr>
-                <tr><td><code>*</code></td><td>0 or more</td><td><code>ab*c</code> matches "ac", "abc", "abbc"</td></tr>
-                <tr><td><code>+</code></td><td>1 or more</td><td><code>ab+c</code> matches "abc", "abbc" but not "ac"</td></tr>
+                <tr><td><code>.</code></td><td>Any character except newline</td><td><code>a.c</code> matches "abc", "a1c", "a-c"</td></tr>
+                <tr><td><code>^</code></td><td>Start of string (or line with <code>m</code> flag)</td><td><code>^Hello</code> matches "Hello world" but not "Say Hello"</td></tr>
+                <tr><td><code>$</code></td><td>End of string (or line with <code>m</code> flag)</td><td><code>world$</code> matches "Hello world"</td></tr>
+                <tr><td><code>*</code></td><td>0 or more of preceding</td><td><code>ab*c</code> matches "ac", "abc", "abbc"</td></tr>
+                <tr><td><code>+</code></td><td>1 or more of preceding</td><td><code>ab+c</code> matches "abc", "abbc" but not "ac"</td></tr>
                 <tr><td><code>?</code></td><td>0 or 1 (optional)</td><td><code>colou?r</code> matches "color" and "colour"</td></tr>
-                <tr><td><code>\d</code></td><td>Any digit (0-9)</td><td><code>\d{3}</code> matches "123"</td></tr>
-                <tr><td><code>\w</code></td><td>Word character (a-z, 0-9, _)</td><td><code>\w+</code> matches "hello_world"</td></tr>
-                <tr><td><code>\s</code></td><td>Whitespace</td><td><code>\s+</code> matches spaces, tabs</td></tr>
-                <tr><td><code>[abc]</code></td><td>Character class</td><td><code>[aeiou]</code> matches any vowel</td></tr>
-                <tr><td><code>(group)</code></td><td>Capture group</td><td><code>(ab)+</code> matches "abab"</td></tr>
+                <tr><td><code>{n}</code></td><td>Exactly n repetitions</td><td><code>\d{4}</code> matches exactly four digits</td></tr>
+                <tr><td><code>{n,m}</code></td><td>Between n and m repetitions</td><td><code>\w{3,8}</code> matches 3 to 8 word characters</td></tr>
+                <tr><td><code>\d</code></td><td>Any digit (0-9)</td><td><code>\d{3}</code> matches "123", "007"</td></tr>
+                <tr><td><code>\D</code></td><td>Any non-digit</td><td><code>\D+</code> matches "abc", "---"</td></tr>
+                <tr><td><code>\w</code></td><td>Word character (a-z, A-Z, 0-9, _)</td><td><code>\w+</code> matches "hello_world"</td></tr>
+                <tr><td><code>\W</code></td><td>Non-word character</td><td><code>\W</code> matches spaces, punctuation</td></tr>
+                <tr><td><code>\s</code></td><td>Whitespace (space, tab, newline)</td><td><code>\s+</code> matches one or more spaces</td></tr>
+                <tr><td><code>\b</code></td><td>Word boundary</td><td><code>\bcat\b</code> matches "cat" but not "category"</td></tr>
+                <tr><td><code>[abc]</code></td><td>Character class — any of a, b, c</td><td><code>[aeiou]</code> matches any vowel</td></tr>
+                <tr><td><code>[^abc]</code></td><td>Negated class — anything except a, b, c</td><td><code>[^0-9]</code> matches non-digits</td></tr>
+                <tr><td><code>(group)</code></td><td>Capture group</td><td><code>(\d{2})/(\d{2})</code> captures day and month</td></tr>
+                <tr><td><code>(?:group)</code></td><td>Non-capturing group</td><td><code>(?:ab)+</code> matches "abab" without capturing</td></tr>
                 <tr><td><code>a|b</code></td><td>Alternation (or)</td><td><code>cat|dog</code> matches "cat" or "dog"</td></tr>
             </tbody>
         </table>
 
         <h2>20 Ready-to-Use Patterns</h2>
 
-        <p><strong>1. Email Address</strong></p>
+        <h3>1. Email Address</h3>
 <pre><code>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$</code></pre>
-        <p>Matches most standard email addresses. For production use, consider RFC 5322 compliant libraries instead of regex.</p>
+        <p>Matches most standard email addresses. This pattern handles common formats well but is not RFC 5322 compliant — edge cases like quoted local parts or IP address domains are not covered. For production email validation, send a confirmation email rather than relying solely on regex.</p>
 
-        <p><strong>2. URL (http/https)</strong></p>
+        <h3>2. URL (http/https)</h3>
 <pre><code>https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)</code></pre>
+        <p>Matches HTTP and HTTPS URLs including paths, query strings and fragments. The <code>https?</code> at the start makes the "s" optional, matching both protocols.</p>
 
-        <p><strong>3. UK Postcode</strong></p>
+        <h3>3. UK Postcode</h3>
 <pre><code>^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$</code></pre>
-        <p>Matches postcodes like SW1A 1AA, M1 1AA, B1 1AA. Use the <code>i</code> flag for case-insensitive matching.</p>
+        <p>Matches UK postcodes like SW1A 1AA, M1 1AA, B1 1AA, EC1A 1BB. The <code>\s*</code> in the middle allows for optional spacing. Use the <code>i</code> flag for case-insensitive matching. This covers all valid UK postcode formats including the single-letter area codes (like M for Manchester) and double-letter ones (like SW for South West London).</p>
 
-        <p><strong>4. UK Phone Number</strong></p>
+        <h3>4. UK Phone Number</h3>
 <pre><code>^(?:(?:\+44)|(?:0))(?:\d\s?){9,10}$</code></pre>
+        <p>Handles both +44 international and 0-prefix domestic formats, with optional spaces between digit groups.</p>
 
-        <p><strong>5. Date (DD/MM/YYYY)</strong></p>
+        <h3>5. Date (DD/MM/YYYY)</h3>
 <pre><code>^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$</code></pre>
+        <p>Validates the day range (01-31) and month range (01-12). Note this does not validate that the day is valid for the given month — 31/02/2026 would pass. For full date validation, parse with a date library after the regex check.</p>
 
-        <p><strong>6. IPv4 Address</strong></p>
+        <h3>6. IPv4 Address</h3>
 <pre><code>^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$</code></pre>
+        <p>Validates each octet is in the 0-255 range. The alternation <code>25[0-5]|2[0-4]\d|[01]?\d\d?</code> handles the three ranges: 250-255, 200-249, and 0-199.</p>
 
-        <p><strong>7. Hex Colour Code</strong></p>
+        <h3>7. Hex Colour Code</h3>
 <pre><code>^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$</code></pre>
+        <p>Matches both 6-digit (#FF5733) and 3-digit (#F00) hex colours, with or without the hash prefix.</p>
 
-        <p><strong>8. Strong Password</strong></p>
+        <h3>8. Strong Password</h3>
 <pre><code>^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$</code></pre>
-        <p>At least 8 characters with one uppercase, one lowercase, one digit and one special character.</p>
+        <p>At least 8 characters with one uppercase, one lowercase, one digit and one special character. The <code>(?=...)</code> syntax is a lookahead — it asserts a condition without consuming characters. Each lookahead checks for one requirement independently.</p>
 
         <div class="blog-cta"><h3>Test These Patterns Live</h3><p>Paste any regex and test string to see matches, capture groups and highlighting in real time.</p><a href="../tools/regex-tester.html">Open Regex Tester →</a></div>
 
-        <p><strong>9. Username (alphanumeric, 3-16 chars)</strong></p>
+        <h3>9. Username (alphanumeric, 3-16 chars)</h3>
 <pre><code>^[a-zA-Z0-9_]{3,16}$</code></pre>
+        <p>Letters, numbers and underscores only. Adjust the <code>{3,16}</code> range to match your application requirements.</p>
 
-        <p><strong>10. Slug (URL-friendly string)</strong></p>
+        <h3>10. URL Slug</h3>
 <pre><code>^[a-z0-9]+(?:-[a-z0-9]+)*$</code></pre>
+        <p>Matches URL-friendly strings like "my-blog-post" or "product123". No consecutive hyphens, no leading or trailing hyphens.</p>
 
-        <p><strong>11. Credit Card Number (basic)</strong></p>
+        <h3>11. Credit Card Number</h3>
 <pre><code>^\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}$</code></pre>
+        <p>Matches 16-digit card numbers with optional spaces or hyphens between groups. This is for format validation only — use Luhn algorithm for checksum validation.</p>
 
-        <p><strong>12. HTML Tag</strong></p>
+        <h3>12. HTML Tag</h3>
 <pre><code>&lt;([a-z]+)([^&lt;]+)*(?:&gt;(.*)&lt;\/\1&gt;|\s+\/&gt;)</code></pre>
-        <p>Captures the tag name in group 1. Note: regex is generally not recommended for parsing complex HTML — use a DOM parser instead.</p>
+        <p>Captures the tag name in group 1 and content in group 3. Important caveat: regex is fundamentally unable to parse nested HTML correctly. Use this for simple extraction tasks only — for anything complex, use a proper DOM parser.</p>
 
-        <p><strong>13. Whitespace Trimming</strong></p>
+        <h3>13. Whitespace Trimming</h3>
 <pre><code>^\s+|\s+$</code></pre>
-        <p>Match leading and trailing whitespace for removal.</p>
+        <p>Match leading and trailing whitespace for removal. The alternation <code>|</code> matches either the start or end pattern. In most languages, the built-in <code>trim()</code> method is more efficient, but this pattern is useful in regex-only contexts like editor find-and-replace.</p>
 
-        <p><strong>14. Duplicate Words</strong></p>
+        <h3>14. Duplicate Words</h3>
 <pre><code>\b(\w+)\s+\1\b</code></pre>
-        <p>Finds consecutive duplicate words like "the the" or "is is".</p>
+        <p>Finds consecutive duplicate words like "the the" or "is is". The <code>\1</code> backreference matches whatever the first capture group matched. Extremely useful for proofreading text content.</p>
 
-        <p><strong>15. ISO Date (YYYY-MM-DD)</strong></p>
+        <h3>15. ISO Date (YYYY-MM-DD)</h3>
 <pre><code>^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$</code></pre>
 
-        <p><strong>16. File Extension</strong></p>
+        <h3>16. File Extension</h3>
 <pre><code>\.([a-zA-Z0-9]+)$</code></pre>
-        <p>Captures the file extension in group 1.</p>
+        <p>Captures the file extension in group 1. The escaped dot <code>\.</code> ensures it matches a literal period, not any character.</p>
 
-        <p><strong>17. Number with Commas</strong></p>
+        <h3>17. Number with Commas</h3>
 <pre><code>^\d{1,3}(,\d{3})*(\.\d+)?$</code></pre>
-        <p>Matches formatted numbers like 1,234,567.89.</p>
+        <p>Matches formatted numbers like 1,234,567.89. The pattern enforces proper comma placement — commas must separate groups of exactly three digits.</p>
 
-        <p><strong>18. CSS Property</strong></p>
+        <h3>18. CSS Property</h3>
 <pre><code>[a-z-]+\s*:\s*[^;]+;</code></pre>
+        <p>Extracts CSS property declarations like <code>color: red;</code> or <code>background-color: #fff;</code>. Useful for parsing inline styles or extracting specific rules from stylesheets.</p>
 
-        <p><strong>19. JSON Key-Value Pair</strong></p>
+        <h3>19. JSON Key-Value Pair</h3>
 <pre><code>"([^"]+)"\s*:\s*("([^"]*)"|\d+|true|false|null)</code></pre>
+        <p>Extracts key-value pairs from simple JSON. Group 1 captures the key, group 2 the full value. For complex nested JSON, always use a proper JSON parser.</p>
 
-        <p><strong>20. Markdown Link</strong></p>
+        <h3>20. Markdown Link</h3>
 <pre><code>\[([^\]]+)\]\(([^)]+)\)</code></pre>
-        <p>Group 1 = link text, group 2 = URL.</p>
+        <p>Group 1 captures the link text, group 2 captures the URL. Handy for extracting or converting Markdown links in batch processing.</p>
+
+        <h2>Lookaheads and Lookbehinds</h2>
+        <p>Lookarounds are zero-width assertions — they check what is ahead of or behind the current position without including it in the match. They are essential for patterns that need context without consuming characters.</p>
+        <table>
+            <thead><tr><th>Syntax</th><th>Name</th><th>Example</th><th>Meaning</th></tr></thead>
+            <tbody>
+                <tr><td><code>(?=...)</code></td><td>Positive lookahead</td><td><code>\d+(?= pounds)</code></td><td>Digits followed by " pounds" (without matching "pounds")</td></tr>
+                <tr><td><code>(?!...)</code></td><td>Negative lookahead</td><td><code>\d+(?! dollars)</code></td><td>Digits NOT followed by " dollars"</td></tr>
+                <tr><td><code>(?&lt;=...)</code></td><td>Positive lookbehind</td><td><code>(?&lt;=\$)\d+</code></td><td>Digits preceded by "$" (without matching "$")</td></tr>
+                <tr><td><code>(?&lt;!...)</code></td><td>Negative lookbehind</td><td><code>(?&lt;!\$)\d+</code></td><td>Digits NOT preceded by "$"</td></tr>
+            </tbody>
+        </table>
+        <p>The strong password pattern above (#8) uses four positive lookaheads to check multiple conditions simultaneously. Each lookahead starts from the same position and independently verifies one requirement. This technique is powerful whenever you need to validate multiple criteria against the same input.</p>
 
         <h2>Regex Flags</h2>
         <table>
             <thead><tr><th>Flag</th><th>Name</th><th>Effect</th></tr></thead>
             <tbody>
                 <tr><td><code>g</code></td><td>Global</td><td>Find all matches, not just the first</td></tr>
-                <tr><td><code>i</code></td><td>Case-insensitive</td><td><code>/hello/i</code> matches "Hello", "HELLO"</td></tr>
-                <tr><td><code>m</code></td><td>Multiline</td><td><code>^</code> and <code>$</code> match line starts/ends</td></tr>
-                <tr><td><code>s</code></td><td>Dotall</td><td><code>.</code> matches newlines too</td></tr>
+                <tr><td><code>i</code></td><td>Case-insensitive</td><td><code>/hello/i</code> matches "Hello", "HELLO", "hElLo"</td></tr>
+                <tr><td><code>m</code></td><td>Multiline</td><td><code>^</code> and <code>$</code> match line starts/ends, not just string start/end</td></tr>
+                <tr><td><code>s</code></td><td>Dotall / Single-line</td><td><code>.</code> matches newlines too (normally it does not)</td></tr>
+                <tr><td><code>u</code></td><td>Unicode</td><td>Enables full Unicode matching — essential for non-ASCII text</td></tr>
             </tbody>
         </table>
+        <p>Flag syntax varies by language. JavaScript uses <code>/pattern/flags</code>, Python uses <code>re.IGNORECASE</code> or inline <code>(?i)</code>, and Java uses <code>Pattern.compile("pattern", Pattern.CASE_INSENSITIVE)</code>. Always check your language documentation for the correct flag syntax.</p>
+
+        <h2>Regex Across Languages</h2>
+        <p>While the core syntax is similar, regex engines differ in important ways:</p>
+        <p><strong>JavaScript:</strong> Uses <code>/pattern/flags</code> literal syntax or <code>new RegExp("pattern", "flags")</code>. Supports named groups with <code>(?&lt;name&gt;...)</code> since ES2018. The <code>matchAll()</code> method returns an iterator of all matches including capture groups.</p>
+        <p><strong>Python:</strong> The <code>re</code> module provides <code>re.search()</code>, <code>re.match()</code> (anchored to start), and <code>re.findall()</code>. Raw strings <code>r"pattern"</code> avoid double-escaping backslashes. Named groups use <code>(?P&lt;name&gt;...)</code> syntax. The <code>re.VERBOSE</code> flag allows comments and whitespace in patterns for readability.</p>
+        <p><strong>C# / .NET:</strong> Uses the <code>Regex</code> class in <code>System.Text.RegularExpressions</code>. Supports balancing groups for matching nested structures — a feature unique to .NET. Compiled regex with <code>RegexOptions.Compiled</code> improves performance for patterns used repeatedly.</p>
+        <p><strong>Go:</strong> Uses the <code>regexp</code> package with RE2 syntax. Importantly, Go does not support backreferences or lookaheads — the RE2 engine guarantees linear-time matching at the cost of these features. If you need lookaheads in Go, you will need to restructure your approach.</p>
 
         <h2>Performance Tips</h2>
         <ul>
-            <li><strong>Be specific</strong> — <code>[a-z]+</code> is faster than <code>.+</code> because the engine doesn't need to backtrack</li>
-            <li><strong>Use non-capturing groups</strong> — <code>(?:abc)</code> instead of <code>(abc)</code> when you don't need the capture</li>
-            <li><strong>Avoid catastrophic backtracking</strong> — nested quantifiers like <code>(a+)+</code> can hang your app</li>
-            <li><strong>Anchor when possible</strong> — <code>^pattern$</code> is faster than an unanchored <code>pattern</code></li>
+            <li><strong>Be specific with character classes</strong> — <code>[a-z]+</code> is faster than <code>.+</code> because the engine can fail faster on non-matching characters without backtracking</li>
+            <li><strong>Use non-capturing groups</strong> — <code>(?:abc)</code> instead of <code>(abc)</code> when you do not need the capture, avoiding the overhead of storing group matches</li>
+            <li><strong>Avoid catastrophic backtracking</strong> — nested quantifiers like <code>(a+)+</code> or <code>(a|a)+</code> can cause exponential time complexity and hang your application. Test patterns against pathological inputs</li>
+            <li><strong>Anchor when possible</strong> — <code>^pattern$</code> is faster than an unanchored <code>pattern</code> because the engine only tries matching from the start</li>
+            <li><strong>Use possessive quantifiers or atomic groups</strong> where supported — <code>a++</code> or <code>(?>a+)</code> prevent backtracking into the group entirely</li>
+            <li><strong>Compile and reuse</strong> — in languages like Python and C#, compile frequently-used patterns once and reuse the compiled object rather than recompiling on every call</li>
         </ul>
 
-        <div class="blog-cta"><h3>Test Any Regex Pattern</h3><p>Real-time matching, capture groups, presets and flag toggles.</p><a href="../tools/regex-tester.html">Open Regex Tester →</a></div>
+        <h2>Common Troubleshooting</h2>
+        <p><strong>Pattern matches in tester but not in code:</strong> Check whether your language requires escaping backslashes in strings. In Java and C#, <code>\d</code> in a string literal needs to be <code>\\d</code>. Python raw strings <code>r"\d"</code> avoid this issue.</p>
+        <p><strong>Only the first match is found:</strong> You probably need the global flag. In JavaScript, use <code>/pattern/g</code> or <code>matchAll()</code>. In Python, use <code>re.findall()</code> instead of <code>re.search()</code>.</p>
+        <p><strong>Match includes too much text:</strong> Quantifiers are greedy by default — <code>.+</code> matches as much as possible. Add <code>?</code> to make it lazy: <code>.+?</code> matches as little as possible. The classic example is matching HTML tags: <code>&lt;.+&gt;</code> matches from the first <code>&lt;</code> to the last <code>&gt;</code> in the entire string, while <code>&lt;.+?&gt;</code> matches each individual tag.</p>
+        <p><strong>Regex works on test data but fails on production input:</strong> Check for encoding issues (UTF-8 vs Latin-1), invisible characters (zero-width spaces, byte order marks), and platform-specific line endings (<code>\r\n</code> on Windows vs <code>\n</code> on Unix).</p>
+
+        <div class="blog-cta"><h3>Test Any Regex Pattern</h3><p>Real-time matching, capture groups, flag toggles and presets. Everything runs in your browser — your data stays private.</p><a href="../tools/regex-tester.html">Open Regex Tester →</a></div>
     </article>
 
     <footer role="contentinfo" class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
     <script src="../assets/js/core.js"></script>
 <script src="../cookie-consent.js"></script>
-<!-- Freelance Dev Promo -->
 <div style="background:#111827;border-top:1px solid #1e293b;padding:14px 24px;text-align:center;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
   <span style="color:#94a3b8;">Need a developer?</span>
   <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#f59e0b;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson — Senior .NET & Azure Developer →</a>
