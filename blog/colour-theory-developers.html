@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colour Theory for Developers: A Practical Guide to Choosing Palettes (2026)</title>
+    <meta name="description" content="Learn colour theory fundamentals for web development. Covers HSL colour model, contrast ratios, accessible palettes, dark mode design, and practical CSS techniques for developers who are not designers.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/blog/colour-theory-developers.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+</head>
+<body>
+<!-- GTM noscript --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54K98MWX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;font-family:-apple-system,system-ui,sans-serif;" onfocus="this.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);width:auto;height:auto;overflow:visible;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;border-radius:4px;font-family:-apple-system,system-ui,sans-serif;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
+    <nav role="navigation" aria-label="Main" class="site-nav"><div class="nav-inner"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="./" class="active">Blog</a></li></ul><button class="nav-hamburger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></div></nav>
+
+    <div class="blog-article-hero"><h1>Colour Theory for Developers: A Practical Guide to Choosing Palettes</h1><p class="meta">18 February 2026 · 16 min read</p></div>
+
+    <article class="blog-article">
+        <p>Most developers can write CSS colour values all day long but freeze when asked to choose a palette from scratch. Colour theory is not about artistic talent — it is a systematic framework with concrete rules that translate directly into code. This guide covers everything a developer needs to build visually coherent, accessible colour systems without relying on a designer for every project.</p>
+
+        <h2>Think in HSL, Not Hex</h2>
+        <p>Hexadecimal codes like <code>#3B82F6</code> are compact but opaque — you cannot look at a hex value and intuit whether it is warm or cool, light or dark, vivid or muted. HSL (Hue, Saturation, Lightness) maps directly to how humans perceive colour and makes systematic palette generation trivial.</p>
+<pre><code>/* These are the same colour */
+color: #3B82F6;
+color: hsl(217, 91%, 60%);
+
+/* Now you can reason about it:
+   Hue 217° = blue
+   Saturation 91% = very vivid
+   Lightness 60% = medium brightness */</code></pre>
+        <p><strong>Hue (0–360°)</strong> is position on the colour wheel: 0° is red, 120° is green, 240° is blue. Think of it as a compass direction — north is red, south-east is green, south-west is blue.</p>
+        <p><strong>Saturation (0–100%)</strong> is vibrancy. 100% is the purest colour; 0% is grey. Most UI backgrounds use low saturation (5–15%) while accent colours use high saturation (70–95%).</p>
+        <p><strong>Lightness (0–100%)</strong> is the brightness axis. 0% is always black, 100% is always white, and 50% is the "truest" version of the hue. Dark mode backgrounds typically sit at 8–15% lightness; light mode backgrounds at 95–100%.</p>
+        <p>The power of HSL for developers is parameterisation. Once you choose a base hue, you can generate an entire palette by varying saturation and lightness systematically:</p>
+<pre><code>:root {
+  --hue: 217;
+  --primary-50:  hsl(var(--hue), 91%, 95%);
+  --primary-100: hsl(var(--hue), 91%, 86%);
+  --primary-200: hsl(var(--hue), 91%, 76%);
+  --primary-500: hsl(var(--hue), 91%, 60%);
+  --primary-700: hsl(var(--hue), 91%, 40%);
+  --primary-900: hsl(var(--hue), 91%, 20%);
+}</code></pre>
+        <p>Change <code>--hue</code> to <code>150</code> and your entire colour system shifts from blue to green — every shade, tint, and tone adjusts proportionally. This is impossible with hex values without recalculating every colour manually.</p>
+
+        <h2>OKLCH: The Modern Successor</h2>
+        <p>HSL has a known flaw: perceived brightness varies across hues. An HSL yellow at 50% lightness appears dramatically brighter than an HSL blue at the same lightness, because human vision is more sensitive to yellow-green wavelengths. This means two colours with identical lightness values can look unevenly bright in a UI.</p>
+        <p>OKLCH (Oklab Lightness, Chroma, Hue) is a perceptually uniform colour space now supported in all modern browsers. In OKLCH, two colours with the same lightness value genuinely appear equally bright to the human eye. CSS support is excellent:</p>
+<pre><code>color: oklch(0.65 0.2 250);  /* Lightness 0-1, Chroma 0-0.4, Hue 0-360 */
+
+/* Perceptually uniform palette */
+--blue: oklch(0.65 0.2 250);
+--green: oklch(0.65 0.2 150);
+--red: oklch(0.65 0.2 25);
+/* All three appear equally bright */</code></pre>
+        <p>If you are starting a new project, OKLCH is the better choice. For existing projects, HSL remains perfectly serviceable — the perceptual uniformity issue primarily matters when placing different hues side by side at the same lightness, which happens less often than you might think.</p>
+
+        <h2>Colour Harmony: Systematic Palette Selection</h2>
+        <p>Colour harmony describes combinations of hues that look intentional rather than random. These are not aesthetic preferences — they are geometric relationships on the colour wheel that create visual balance.</p>
+
+        <h3>Monochromatic (Single Hue)</h3>
+        <p>Use one hue and vary saturation and lightness. This is the safest choice for developer-built UIs because it cannot clash. Dashboard backgrounds, card hierarchies, and text-over-background layering all work perfectly with monochromatic schemes. The risk is monotony — counter it with a single accent in a contrasting hue for interactive elements.</p>
+
+        <h3>Complementary (Opposite Hues)</h3>
+        <p>Two hues 180° apart on the wheel: blue and orange, red and cyan, purple and yellow. High contrast, high energy. Use the dominant hue for 80–90% of the interface and the complement as an accent for calls to action, alerts, or highlights. Never use complementary colours at equal weight — it creates visual vibration that is uncomfortable to look at and nearly impossible to make accessible.</p>
+
+        <h3>Analogous (Adjacent Hues)</h3>
+        <p>Three hues within 60° of each other: blue, blue-violet, and violet; or orange, red-orange, and red. These create harmonious, low-contrast palettes ideal for backgrounds and atmospheric interfaces. Nature uses analogous colours extensively — think of autumn leaves (yellow, orange, red) or ocean scenes (blue, teal, green).</p>
+
+        <h3>Split Complementary (Y-Shape)</h3>
+        <p>Start with a base hue, find its complement, then take the two hues adjacent to the complement. For blue (240°), the complement is orange (60°), and the split complement uses yellow-orange (45°) and red-orange (75°). This gives the contrast of complementary schemes without the intensity, making it more forgiving for developers to implement.</p>
+
+        <h2>Contrast and Accessibility</h2>
+        <p>Colour accessibility is not optional — it is a legal requirement in many jurisdictions and affects roughly 8% of men and 0.5% of women who have some form of colour vision deficiency. WCAG 2.1 defines specific contrast ratios:</p>
+        <table>
+            <thead><tr><th>Element</th><th>Minimum Ratio (AA)</th><th>Enhanced Ratio (AAA)</th></tr></thead>
+            <tbody>
+                <tr><td>Normal text (&lt; 18pt)</td><td>4.5:1</td><td>7:1</td></tr>
+                <tr><td>Large text (≥ 18pt bold or 24pt)</td><td>3:1</td><td>4.5:1</td></tr>
+                <tr><td>UI components &amp; graphics</td><td>3:1</td><td>Not defined</td></tr>
+            </tbody>
+        </table>
+        <p>To calculate contrast ratio, you need the relative luminance of both colours. The formula is straightforward but tedious by hand — this is exactly the kind of task best handled by a tool. The critical insight is that contrast depends on both colours in the pair, not either colour in isolation. A vivid blue that passes on white will fail on light blue.</p>
+
+        <h3>Practical Accessibility Patterns</h3>
+        <p><strong>Never use colour alone to convey information.</strong> If a form field turns red on error, also add an error icon and text message. If a chart uses colour to distinguish series, also use different line patterns or data point shapes. This is the single most common accessibility failure in developer-built UIs.</p>
+        <p><strong>Test with simulated colour blindness.</strong> Chrome DevTools has a built-in colour blindness simulator: DevTools → Rendering → Emulate vision deficiencies. Check your palette under protanopia (no red cones), deuteranopia (no green cones), and tritanopia (no blue cones). The most common type — deuteranopia — makes red and green nearly indistinguishable, which is why red/green colour coding for pass/fail is problematic.</p>
+        <p><strong>Design in greyscale first.</strong> If your interface makes sense in greyscale — hierarchy is clear, interactive elements are distinguishable, states are readable — then colour becomes an enhancement rather than a dependency. This approach also produces better dark mode results because the luminance relationships are already established.</p>
+
+        <h2>Building a Dark Mode Palette</h2>
+        <p>Dark mode is not "invert all the colours." Direct inversion produces eye-straining pure white text on pure black backgrounds with oversaturated accent colours that vibrate against dark surfaces. Effective dark mode requires deliberate adjustments:</p>
+        <p><strong>Backgrounds should not be pure black.</strong> Use dark greys with a slight hue tint — <code>hsl(220, 15%, 8%)</code> for primary background, <code>hsl(220, 13%, 12%)</code> for elevated surfaces. The slight blue tint reads as "dark" without the harshness of <code>#000000</code>. Material Design's dark theme research found that <code>#121212</code> is optimal for primary backgrounds.</p>
+        <p><strong>Reduce saturation of accent colours.</strong> A button that is <code>hsl(217, 91%, 60%)</code> in light mode should be desaturated slightly — perhaps <code>hsl(217, 80%, 65%)</code> — in dark mode. Highly saturated colours on dark backgrounds create a halation effect where the colour appears to glow and bleed into surrounding space, making text harder to read.</p>
+        <p><strong>Surface elevation uses lightness, not shadow.</strong> In light mode, elevation is communicated through drop shadows. In dark mode, shadows are invisible against dark backgrounds. Instead, use progressively lighter surface colours: background at 8%, cards at 12%, dropdowns at 16%, tooltips at 20%. This creates a clear visual hierarchy without any shadows.</p>
+<pre><code>:root {
+  --surface-0: hsl(220, 15%, 8%);   /* Page background */
+  --surface-1: hsl(220, 13%, 12%);  /* Cards */
+  --surface-2: hsl(220, 11%, 16%);  /* Dropdowns, menus */
+  --surface-3: hsl(220, 9%, 20%);   /* Tooltips, popovers */
+  --surface-4: hsl(220, 7%, 24%);   /* Selected states */
+}</code></pre>
+
+        <h2>CSS Custom Properties for Colour Systems</h2>
+        <p>CSS custom properties (variables) are the foundation of maintainable colour systems. The pattern that scales best separates semantic tokens from raw colour values:</p>
+<pre><code>/* Layer 1: Raw palette */
+:root {
+  --blue-500: hsl(217, 91%, 60%);
+  --blue-600: hsl(217, 91%, 50%);
+  --grey-100: hsl(220, 15%, 95%);
+  --grey-900: hsl(220, 15%, 10%);
+}
+
+/* Layer 2: Semantic tokens */
+:root {
+  --color-primary: var(--blue-500);
+  --color-primary-hover: var(--blue-600);
+  --color-bg: var(--grey-100);
+  --color-text: var(--grey-900);
+}
+
+/* Dark mode: only change semantic tokens */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: hsl(217, 80%, 65%);
+    --color-bg: hsl(220, 15%, 8%);
+    --color-text: hsl(220, 10%, 90%);
+  }
+}</code></pre>
+        <p>Components reference only semantic tokens (<code>var(--color-primary)</code>), never raw palette values. When you add dark mode, a new theme, or a white-label variant, you change the token mappings without touching any component CSS. This pattern scales from side projects to design systems serving hundreds of components.</p>
+
+        <h2>Colour in Data Visualisation</h2>
+        <p>Charts and graphs have stricter colour requirements than general UI because colours must be distinguishable from each other, not just from a background. Sequential palettes (light blue to dark blue) suit ordered data like temperature ranges. Diverging palettes (blue through white to red) suit data with a meaningful midpoint like profit/loss. Categorical palettes (distinct hues) suit unrelated categories — but limit yourself to 8 distinguishable colours maximum; beyond that, use patterns or labels.</p>
+        <p>Colour-blind-safe categorical palettes exist and should be your default. The most widely recommended is the 8-colour qualitative palette from Paul Tol's research, which remains distinguishable under all common forms of colour vision deficiency. If you are using D3.js or Matplotlib, they include colour-blind-safe palettes as built-in options.</p>
+
+        <h2>Tools for Developers</h2>
+        <p>You do not need to memorise colour theory to apply it. The right tools encode these principles into interactive workflows. For palette exploration and generation, our <a href="../tools/colour-palette.html" style="color:var(--accent)">colour palette tool</a> lets you experiment with harmony rules, preview palettes, and copy CSS values — all in your browser with no account required.</p>
+        <p>For contrast checking, Chrome DevTools shows contrast ratios directly on inspected elements, and browser extensions like Stark or axe DevTools provide page-wide contrast audits. Firefox's accessibility inspector is particularly good for automated contrast checking.</p>
+        <p>For design tokens at scale, tools like Style Dictionary (by Amazon) or Theo (by Salesforce) generate platform-specific colour tokens from a single source of truth — outputting CSS variables, iOS/Android constants, and design tool formats from one JSON definition.</p>
+
+        <div class="blog-cta"><h3>Build Your Colour Palette</h3><p>Explore colour harmonies, check contrast ratios, and export CSS variables — all in your browser.</p><a href="../tools/colour-palette.html">Open Colour Palette Tool &rarr;</a></div>
+    </article>
+
+    <footer role="contentinfo" class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> &copy; 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+<script src="../cookie-consent.js"></script>
+<div style="background:#111827;border-top:1px solid #1e293b;padding:14px 24px;text-align:center;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+  <span style="color:#94a3b8;">Need a developer?</span>
+  <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#f59e0b;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson &mdash; Senior .NET & Azure Developer &rarr;</a>
+</div>
+</body>
+</html>

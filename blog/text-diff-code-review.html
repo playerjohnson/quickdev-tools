@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Diff for Code Review: How Diffing Works and Why It Matters (2026)</title>
+    <meta name="description" content="Understand how text diff algorithms work, why they matter for code review, and how to read unified diffs. Covers Myers algorithm, patience diff, semantic diffing and practical workflows.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/blog/text-diff-code-review.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+</head>
+<body>
+<!-- GTM noscript --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54K98MWX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;font-family:-apple-system,system-ui,sans-serif;" onfocus="this.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);width:auto;height:auto;overflow:visible;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;border-radius:4px;font-family:-apple-system,system-ui,sans-serif;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
+    <nav role="navigation" aria-label="Main" class="site-nav"><div class="nav-inner"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="./" class="active">Blog</a></li></ul><button class="nav-hamburger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></div></nav>
+
+    <div class="blog-article-hero"><h1>Text Diff for Code Review: How Diffing Works and Why It Matters</h1><p class="meta">18 February 2026 · 15 min read</p></div>
+
+    <article class="blog-article">
+        <p>Every pull request, every merge conflict, every <code>git log -p</code> output — they all rely on text diffing. Yet most developers treat diff output as a black box: green lines are additions, red lines are deletions, move on. Understanding how diff algorithms actually work makes you faster at code review, better at resolving merge conflicts, and more effective at structuring commits that are easy for your team to review.</p>
+
+        <h2>What a Diff Actually Computes</h2>
+        <p>A diff algorithm takes two sequences of text (usually lines) and computes the <strong>minimum edit script</strong> — the smallest set of insertions and deletions that transforms the first text into the second. This is formally known as the Longest Common Subsequence (LCS) problem, and it has been studied in computer science since the 1970s.</p>
+        <p>Consider two simple files:</p>
+<pre><code># File A          # File B
+function greet()  function greet()
+  puts "hello"      puts "hello"
+  puts "world"      puts "goodbye"
+end               end</code></pre>
+        <p>The diff identifies that line 3 changed from <code>puts "world"</code> to <code>puts "goodbye"</code>. In unified diff format, this appears as a deletion of the old line followed by an insertion of the new one. But the algorithm does not actually understand "change" — it only understands insert and delete. A "changed" line is simply a delete-then-insert at the same position. This distinction matters when you are reading complex diffs where multiple adjacent lines change simultaneously.</p>
+
+        <h2>The Myers Diff Algorithm</h2>
+        <p>The default algorithm behind <code>git diff</code>, GNU diff, and most programming libraries is Eugene Myers' 1986 algorithm. It finds the shortest edit script — the minimum number of insertions and deletions — using a greedy approach that explores an edit graph.</p>
+        <p>Think of the edit graph as a grid where the x-axis represents lines in the original file and the y-axis represents lines in the modified file. Moving right means deleting a line from the original. Moving down means inserting a line from the new version. Moving diagonally means a line is unchanged (a match). The algorithm finds the path from the top-left corner to the bottom-right corner that uses the most diagonal moves — maximising matching lines and minimising edits.</p>
+        <p>The time complexity is <code>O(N * D)</code> where N is the total length of both files and D is the size of the minimum edit script. For files that are mostly similar (small D), this is nearly linear. For completely different files, it degrades toward <code>O(N²)</code>. In practice, code review diffs are usually small changes to large files, so Myers performs extremely well.</p>
+
+        <h2>When Myers Gets It Wrong: The Patience Diff Alternative</h2>
+        <p>Myers optimises for the shortest edit script, but the shortest diff is not always the most readable. Consider this refactoring where a function is moved:</p>
+<pre><code># Before           # After
+def validate()     def process()
+  check_input()      run_pipeline()
+end                end
+
+def process()      def validate()
+  run_pipeline()     check_input()
+end                end</code></pre>
+        <p>Myers might match the <code>end</code> keywords across the wrong functions, producing a confusing diff that appears to change the bodies of both functions rather than simply showing that they swapped positions. The output would be technically correct (minimum edits) but cognitively expensive to review.</p>
+        <p><strong>Patience diff</strong> (available in Git via <code>git diff --patience</code>) takes a different approach. It first identifies unique lines that appear exactly once in both files — these become anchor points. Then it builds the diff around those anchors. Because function signatures and unique comments tend to be unique lines, patience diff produces more readable output for structural changes, function reordering, and block movements.</p>
+        <p>Git also offers the <code>--histogram</code> algorithm, which is an optimised version of patience diff and is the default in some Git configurations. You can set it globally with <code>git config --global diff.algorithm histogram</code>.</p>
+
+        <h2>Reading Unified Diff Format</h2>
+        <p>The unified diff format is what you see in pull requests, <code>git diff</code> output, and patch files. Here is a complete example with annotations:</p>
+<pre><code>--- a/src/auth.js                 ← Original file path
++++ b/src/auth.js                 ← Modified file path
+@@ -12,7 +12,9 @@ function login(user) {  ← Hunk header
+   const token = generateToken();  ← Context line (unchanged)
+   const expiry = Date.now();      ← Context line
+-  return { token, expiry };       ← Deleted line
++  const refreshToken = uuid();    ← Added line
++  return {                        ← Added line
++    token, expiry, refreshToken   ← Added line
++  };                              ← Added line
+   }                               ← Context line</code></pre>
+        <p>The hunk header <code>@@ -12,7 +12,9 @@</code> tells you: the original starts at line 12 and shows 7 lines; the modified version starts at line 12 and shows 9 lines. The function name after <code>@@</code> is a Git convenience that shows the nearest enclosing function — incredibly useful for navigating large diffs.</p>
+        <p>Context lines (no prefix) are unchanged lines shown for reference, typically 3 lines above and below each change. You can adjust this with <code>git diff -U5</code> for 5 lines of context or <code>-U0</code> for no context at all.</p>
+
+        <h2>Diff Strategies for Better Code Reviews</h2>
+
+        <h3>Review Commit by Commit, Not the Full PR</h3>
+        <p>A well-structured pull request tells a story through its commits. Reviewing the full diff shows you the destination but not the journey. Reviewing each commit separately shows the reasoning behind each change. In GitHub, click "Commits" tab on a PR to review this way. On the command line, <code>git log --oneline feature-branch..main</code> lists the commits, and <code>git show &lt;hash&gt;</code> shows each one.</p>
+
+        <h3>Use Word-Level Diffing for Prose and Config</h3>
+        <p>Line-level diffs are perfect for code but terrible for prose, configuration files with long lines, or minified content. Git supports word-level diffing with <code>git diff --word-diff</code>, which highlights individual changed words within a line rather than flagging the entire line as modified. For JSON and YAML config files, this makes small value changes immediately visible instead of forcing you to scan long lines character by character.</p>
+
+        <h3>Ignore Whitespace When It Doesn't Matter</h3>
+        <p>Reformatting commits — running Prettier, changing indentation, normalising line endings — produce enormous diffs that contain zero logical changes. Use <code>git diff -w</code> to ignore all whitespace changes, or <code>git diff --ignore-space-change</code> to ignore only changes in the amount of whitespace (preserving additions and deletions of whitespace). In GitHub PRs, the "Hide whitespace changes" toggle does the same thing.</p>
+
+        <h3>Detect Moved Code with --color-moved</h3>
+        <p>Git 2.15 introduced <code>--color-moved</code>, which highlights code that was moved from one location to another using a distinct colour (typically dimmed). This is invaluable for refactoring reviews where functions or blocks are reorganised without modification. Enable it by default: <code>git config --global diff.colorMoved default</code>.</p>
+
+        <h2>Semantic Diff: Beyond Line Matching</h2>
+        <p>Traditional diff tools treat source code as plain text. They have no understanding of syntax, so a moved function looks identical to a deleted-and-recreated function. Semantic diff tools parse the abstract syntax tree (AST) of the code and compare structural elements rather than text lines.</p>
+        <p>Tools like <a href="https://difftastic.wilfred.me.uk/" style="color:var(--accent)">Difftastic</a> understand the syntax of dozens of languages. They can show that a function was moved without modification, that a variable was renamed consistently, or that an <code>if</code> block was wrapped around existing code — all things that produce noisy line-level diffs but are structurally simple changes.</p>
+        <p>You can configure Git to use an external diff tool: <code>git config --global diff.external difft</code> (for Difftastic) or <code>git difftool</code> for one-off comparisons. The trade-off is speed — AST parsing is slower than line-level comparison, so semantic diff tools may feel sluggish on very large changesets.</p>
+
+        <h2>Diffing in Different Contexts</h2>
+
+        <h3>Pull Request Reviews</h3>
+        <p>GitHub, GitLab, and Bitbucket all render diffs with syntax highlighting, inline commenting, and file-level navigation. Tips for effective PR review: collapse files you have already reviewed (GitHub remembers this across sessions), use keyboard shortcuts (n/p to jump between files in GitHub), and leave summary comments on the PR rather than scattering feedback across individual lines when the issue is architectural.</p>
+
+        <h3>Merge Conflict Resolution</h3>
+        <p>Merge conflicts are really three-way diffs: the common ancestor (base), your version (ours), and the incoming version (theirs). Understanding this helps enormously. Use <code>git config merge.conflictStyle zdiff3</code> to show all three versions in conflict markers instead of just two. The base version tells you what was there before either side made changes, which often makes the correct resolution obvious.</p>
+
+        <h3>Database Migrations</h3>
+        <p>Schema diffs are a specialised form of text diffing where the output is a migration script. Tools like <code>sqldiff</code>, Flyway, and Alembic compute the diff between two database schemas and generate ALTER TABLE statements. The same LCS principles apply, but the "edit operations" are SQL DDL statements rather than line insertions and deletions.</p>
+
+        <h3>Configuration Drift Detection</h3>
+        <p>Infrastructure-as-code tools (Terraform, Ansible, Puppet) use diffing to show planned changes before applying them. <code>terraform plan</code> is essentially a diff between your desired state (config files) and the current state (cloud resources). Reading these diffs accurately prevents catastrophic infrastructure changes.</p>
+
+        <h2>Performance Characteristics of Diff Algorithms</h2>
+        <table>
+            <thead><tr><th>Algorithm</th><th>Time Complexity</th><th>Best For</th><th>Available In</th></tr></thead>
+            <tbody>
+                <tr><td>Myers</td><td>O(N × D)</td><td>Shortest edit script, typical code changes</td><td>Git (default), GNU diff</td></tr>
+                <tr><td>Patience</td><td>O(N log N + D²)</td><td>Structural changes, function reordering</td><td><code>git diff --patience</code></td></tr>
+                <tr><td>Histogram</td><td>O(N × D) optimised</td><td>General purpose, often faster than Myers</td><td><code>git diff --histogram</code></td></tr>
+                <tr><td>Hunt-McIlroy</td><td>O(N × D)</td><td>Original Unix diff, historical interest</td><td>Legacy systems</td></tr>
+                <tr><td>Semantic/AST</td><td>O(N log N) typical</td><td>Language-aware structural comparison</td><td>Difftastic, GumTree</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Common Diff Mistakes in Code Review</h2>
+        <p><strong>Reviewing reformatted code as logic changes.</strong> When a commit mixes formatting changes with logic changes, the diff becomes nearly unreadable. Encourage your team to separate formatting commits from logic commits. Better yet, enforce formatting via pre-commit hooks so reformatting diffs never reach pull requests at all.</p>
+        <p><strong>Missing context in large diffs.</strong> If a pull request touches 40 files, there is a strong temptation to skim. But the bugs hide in the files you skip. If you cannot review a PR thoroughly in 30 minutes, it is too large. Break it up. Research from SmartBear found that review effectiveness drops dramatically after 400 lines of diff, and anything over 200 lines should be reviewed in focused sessions.</p>
+        <p><strong>Anchoring on the diff instead of the result.</strong> Diffs show you what changed, not what the code looks like now. After reviewing the diff, open the full file at the target commit and read the affected functions in context. A change that looks fine in isolation might be inconsistent with surrounding code.</p>
+        <p><strong>Ignoring test diffs.</strong> Test code is production code — it documents expected behaviour and catches regressions. Review test diffs as carefully as implementation diffs. If the logic changed but no tests changed, that is a red flag worth commenting on.</p>
+
+        <h2>Automating Diff Analysis</h2>
+        <p>Several tools can augment human code review by analysing diffs programmatically. Linters that run on changed files only (via <code>git diff --name-only</code>) catch style issues before review. Coverage diff tools show whether new code is covered by tests. Complexity analysis on changed functions flags regressions in code maintainability.</p>
+        <p>For quick one-off comparisons during development — checking two versions of a config file, comparing API responses, or verifying text transformations — a browser-based diff tool is faster than setting up a full Git workflow. Our <a href="../tools/diff-tool.html" style="color:var(--accent)">text diff tool</a> runs entirely in your browser with syntax-highlighted output and no file uploads.</p>
+
+        <div class="blog-cta"><h3>Compare Text Instantly</h3><p>Paste two text blocks, see the differences highlighted. No uploads, no accounts — runs entirely in your browser.</p><a href="../tools/diff-tool.html">Open Diff Tool &rarr;</a></div>
+    </article>
+
+    <footer role="contentinfo" class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> &copy; 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+<script src="../cookie-consent.js"></script>
+<div style="background:#111827;border-top:1px solid #1e293b;padding:14px 24px;text-align:center;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+  <span style="color:#94a3b8;">Need a developer?</span>
+  <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#f59e0b;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson &mdash; Senior .NET & Azure Developer &rarr;</a>
+</div>
+</body>
+</html>
