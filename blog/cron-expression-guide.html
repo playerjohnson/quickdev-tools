@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cron Expression Syntax: Complete Guide with Examples (2026)</title>
+    <meta name="description" content="Learn cron expression syntax from scratch. Covers all five fields, special characters, practical scheduling examples and common pitfalls for Linux, Kubernetes and CI/CD.">
+    <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/blog/cron-expression-guide.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/core.css">
+</head>
+<body>
+<!-- GTM noscript --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54K98MWX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;font-family:-apple-system,system-ui,sans-serif;" onfocus="this.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);width:auto;height:auto;overflow:visible;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;border-radius:4px;font-family:-apple-system,system-ui,sans-serif;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
+    <nav role="navigation" aria-label="Main" class="site-nav"><div class="nav-inner"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><ul class="nav-links"><li><a href="../">Tools</a></li><li><a href="./" class="active">Blog</a></li></ul><button class="nav-hamburger" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button></div></nav>
+
+    <div class="blog-article-hero"><h1>Cron Expression Syntax: Complete Guide with Examples</h1><p class="meta">18 February 2026 · 14 min read</p></div>
+
+    <article class="blog-article">
+        <p>Cron expressions are the universal language of scheduled tasks. Whether you are setting up a database backup on Linux, scheduling a Kubernetes CronJob, configuring a CI/CD pipeline, or automating a cloud function, you will need to write cron expressions. The syntax is compact but not intuitive — this guide breaks it down field by field with practical examples you can use immediately.</p>
+
+        <h2>The Five Fields</h2>
+        <p>A standard cron expression has five fields separated by spaces, read from left to right:</p>
+<pre><code>┌───────────── minute (0-59)
+│ ┌───────────── hour (0-23)
+│ │ ┌───────────── day of month (1-31)
+│ │ │ ┌───────────── month (1-12)
+│ │ │ │ ┌───────────── day of week (0-7, where 0 and 7 are Sunday)
+│ │ │ │ │
+* * * * *</code></pre>
+        <p>Each field accepts specific values, ranges, lists and special characters. The expression fires when all five fields match the current time simultaneously.</p>
+
+        <h2>Special Characters</h2>
+        <table>
+            <thead><tr><th>Character</th><th>Meaning</th><th>Example</th></tr></thead>
+            <tbody>
+                <tr><td><code>*</code></td><td>Any value</td><td><code>* * * * *</code> runs every minute</td></tr>
+                <tr><td><code>,</code></td><td>List of values</td><td><code>1,15 * * * *</code> runs at minute 1 and 15</td></tr>
+                <tr><td><code>-</code></td><td>Range of values</td><td><code>0 9-17 * * *</code> runs hourly from 9am to 5pm</td></tr>
+                <tr><td><code>/</code></td><td>Step values</td><td><code>*/15 * * * *</code> runs every 15 minutes</td></tr>
+            </tbody>
+        </table>
+        <p>Some implementations support additional characters: <code>L</code> for last (last day of month), <code>W</code> for nearest weekday, and <code>#</code> for nth weekday of month (e.g. <code>5#2</code> = second Friday). These are non-standard extensions found in Quartz scheduler, Spring, and some cloud platforms but not in standard Unix cron.</p>
+
+        <h2>20 Practical Examples</h2>
+
+        <h3>Basic Schedules</h3>
+<pre><code># Every minute
+* * * * *
+
+# Every hour at minute 0
+0 * * * *
+
+# Every day at midnight
+0 0 * * *
+
+# Every day at 9:30am
+30 9 * * *
+
+# Every Monday at 8am
+0 8 * * 1</code></pre>
+
+        <h3>Business Schedules</h3>
+<pre><code># Every weekday at 9am (Mon-Fri)
+0 9 * * 1-5
+
+# Every 15 minutes during business hours
+*/15 9-17 * * 1-5
+
+# First day of every month at midnight
+0 0 1 * *
+
+# Every quarter (Jan, Apr, Jul, Oct) on the 1st
+0 0 1 1,4,7,10 *
+
+# Last working day — approximate (28th)
+0 18 28 * *</code></pre>
+
+        <h3>Maintenance and Operations</h3>
+<pre><code># Database backup every day at 2am
+0 2 * * *
+
+# Log rotation every Sunday at 3am
+0 3 * * 0
+
+# Health check every 5 minutes
+*/5 * * * *
+
+# Cache clear twice daily
+0 6,18 * * *
+
+# Weekly report every Friday at 5pm
+0 17 * * 5
+
+# Cleanup job at 3:30am on weekends only
+30 3 * * 6,0</code></pre>
+
+        <div class="blog-cta"><h3>Build Cron Expressions Visually</h3><p>Select schedule parameters from dropdowns and see the cron expression generated in real time with next run preview.</p><a href="../tools/cron-builder.html">Open Cron Builder &rarr;</a></div>
+
+        <h2>Common Mistakes</h2>
+        <p><strong>Confusing day-of-month and day-of-week:</strong> The fourth and fifth fields are month and day-of-week respectively. <code>0 0 * * 5</code> means every Friday, not the 5th of every month. For the 5th of every month, use <code>0 0 5 * *</code>.</p>
+        <p><strong>Step values starting from zero:</strong> <code>*/15 * * * *</code> runs at minutes 0, 15, 30, 45 — not at 15-minute intervals from when the cron was created. If you start a cron at 10:07, the next run is still at 10:15, not 10:22.</p>
+        <p><strong>Timezone assumptions:</strong> Unix cron uses the system timezone. Kubernetes CronJobs use UTC by default. Cloud scheduler services vary — AWS EventBridge uses UTC, Google Cloud Scheduler lets you specify a timezone. Always verify which timezone your cron system uses, especially for schedules that cross midnight or involve daylight saving transitions.</p>
+        <p><strong>Overlap risk:</strong> If a job takes longer to run than the interval between runs, you can end up with multiple instances running simultaneously. A backup job scheduled every hour that takes 90 minutes to complete will overlap. Most cron systems do not prevent this automatically — use a lock file, process check, or concurrency policy to guard against it.</p>
+        <p><strong>Month and weekday names:</strong> Some implementations accept names like <code>MON</code> or <code>JAN</code> instead of numbers. This improves readability but is not universal. Standard Unix cron only accepts numbers. Use names in Kubernetes, Quartz and Spring; use numbers everywhere else.</p>
+
+        <h2>Cron in Different Systems</h2>
+
+        <h3>Linux/Unix Crontab</h3>
+        <p>Edit with <code>crontab -e</code>. Each line is an expression followed by the command:</p>
+<pre><code># Backup database every night at 2am
+0 2 * * * /usr/local/bin/backup.sh >> /var/log/backup.log 2>&1
+
+# Environment variables
+MAILTO=admin@example.com
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Run as specific user (system crontab only)
+0 2 * * * postgres /usr/local/bin/pg_backup.sh</code></pre>
+        <p>The <code>2>&1</code> redirect ensures both stdout and stderr are captured in the log. Without this, error output vanishes silently — one of the most common reasons cron jobs appear to fail without explanation.</p>
+
+        <h3>Kubernetes CronJob</h3>
+<pre><code>apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nightly-backup
+spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: backup-tool:latest
+          restartPolicy: OnFailure</code></pre>
+        <p>Kubernetes CronJobs add a <code>concurrencyPolicy</code> field that standard cron lacks — set it to <code>Forbid</code> to prevent overlapping runs, or <code>Replace</code> to kill the previous run when a new one starts.</p>
+
+        <h3>GitHub Actions</h3>
+<pre><code>on:
+  schedule:
+    - cron: '0 6 * * 1-5'  # Weekdays at 6am UTC</code></pre>
+        <p>GitHub Actions cron runs in UTC and has a minimum interval of 5 minutes. Scheduled workflows may be delayed during periods of high demand on GitHub infrastructure.</p>
+
+        <h3>Cloud Platforms</h3>
+        <p>AWS EventBridge, Google Cloud Scheduler and Azure Logic Apps all support cron expressions but with slight variations. AWS adds a sixth field for year and uses <code>?</code> for unspecified day-of-month or day-of-week. Google Cloud Scheduler follows standard five-field syntax with timezone support. Always check your platform's specific cron documentation.</p>
+
+        <h2>Six-Field and Seven-Field Expressions</h2>
+        <p>Some systems extend the standard five-field format:</p>
+        <table>
+            <thead><tr><th>System</th><th>Fields</th><th>Extra Fields</th></tr></thead>
+            <tbody>
+                <tr><td>Standard Unix</td><td>5</td><td>None</td></tr>
+                <tr><td>Quartz / Spring</td><td>6-7</td><td>Seconds (prepended), Year (appended, optional)</td></tr>
+                <tr><td>AWS EventBridge</td><td>6</td><td>Year (appended)</td></tr>
+                <tr><td>Kubernetes</td><td>5</td><td>None</td></tr>
+            </tbody>
+        </table>
+        <p>The seconds field in Quartz allows sub-minute scheduling like <code>0/30 * * * * ?</code> for every 30 seconds. If you see a cron expression with six fields and the first is <code>0</code>, it is likely a Quartz expression where the first field is seconds, not minutes.</p>
+
+        <h2>Testing and Validation</h2>
+        <p>Never deploy a cron expression without testing it first. A mistake in a production cron can mean a job runs every minute instead of every month — potentially overloading systems, sending thousands of duplicate emails, or running expensive cloud functions non-stop.</p>
+        <p>Use a cron expression tool to preview the next several run times before deploying. Our <a href="../tools/cron-builder.html" style="color:var(--accent)">cron builder</a> shows the next 5 scheduled runs so you can verify the schedule matches your intent. On the command line, <code>crontab -l</code> lists your current cron jobs, and tools like <code>cronnext</code> can preview upcoming executions.</p>
+        <p>For critical production crons, add monitoring. If a backup job should run nightly, set up an alert that fires if the job has not completed successfully in the last 25 hours. Healthchecks.io and Cronitor are purpose-built for this — they give each cron job a unique URL to ping on completion, and alert you if the ping does not arrive on schedule.</p>
+
+        <div class="blog-cta"><h3>Build Cron Expressions Visually</h3><p>Select your schedule, see the expression, and preview next runs — all in your browser.</p><a href="../tools/cron-builder.html">Open Cron Builder &rarr;</a></div>
+    </article>
+
+    <footer role="contentinfo" class="site-footer"><div class="footer-inner"><div class="footer-brand"><a href="../" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a><p>Free developer tools. 100% client-side.</p></div></div><div class="footer-bottom"><p><a href="../privacy.html" style="color:var(--text-muted);text-decoration:underline">Privacy</a> · <a href="../terms.html" style="color:var(--text-muted);text-decoration:underline">Terms</a> &copy; 2026 QuickDev Tools.</p></div></footer>
+    <script src="../assets/js/core.js"></script>
+<script src="../cookie-consent.js"></script>
+<div style="background:#111827;border-top:1px solid #1e293b;padding:14px 24px;text-align:center;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
+  <span style="color:#94a3b8;">Need a developer?</span>
+  <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#f59e0b;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson &mdash; Senior .NET & Azure Developer &rarr;</a>
+</div>
+</body>
+</html>
