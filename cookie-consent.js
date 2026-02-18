@@ -54,11 +54,11 @@
   var banner = document.createElement('div');
   banner.id = 'cookie-banner';
   banner.innerHTML =
-    '<div style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#1a1a2e;border-top:1px solid #333;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:-apple-system,system-ui,sans-serif;font-size:14px;color:#cbd5e1;">' +
-      '<p style="margin:0;flex:1;min-width:280px;">This site uses cookies for analytics and advertising. <a href="privacy.html" style="color:#f59e0b;text-decoration:underline;">Privacy Policy</a></p>' +
+    '<div style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#13161A;border-top:1px solid #262D38;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:-apple-system,system-ui,sans-serif;font-size:14px;color:#cbd5e1;">' +
+      '<p style="margin:0;flex:1;min-width:280px;">This site uses cookies for analytics and advertising. <a href="privacy.html" style="color:#C3F73A;text-decoration:underline;">Privacy Policy</a></p>' +
       '<div style="display:flex;gap:8px;flex-shrink:0;">' +
         '<button id="cookie-reject" style="padding:8px 18px;border-radius:6px;border:1px solid #475569;background:transparent;color:#cbd5e1;font-size:13px;font-weight:500;cursor:pointer;">Reject</button>' +
-        '<button id="cookie-accept" style="padding:8px 18px;border-radius:6px;border:none;background:#f59e0b;color:#0a0e1a;font-size:13px;font-weight:600;cursor:pointer;">Accept</button>' +
+        '<button id="cookie-accept" style="padding:8px 18px;border-radius:6px;border:none;background:#C3F73A;color:#0B0D0F;font-size:13px;font-weight:600;cursor:pointer;">Accept</button>' +
       '</div>' +
     '</div>';
 

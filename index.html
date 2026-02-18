@@ -4,10 +4,10 @@
     <meta charset="UTF-8">    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickDev Tools — Free Online Developer Utilities</title>
-    <meta name="description" content="Free developer tools: JSON formatter, regex tester, Base64 encoder, CSS gradient generator, diff tool, cron builder and XML formatter.">
+    <meta name="description" content="Free developer tools: JSON formatter, regex tester, Base64 encoder, CSS gradient generator, diff tool, cron builder and XML formatter. 100% client-side.">
     <link rel="canonical" href="https://playerjohnson.github.io/quickdev-tools/">
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/core.css">
     <meta property="og:type" content="website">
     <meta property="og:title" content="QuickDev Tools — Free Online Developer Utilities">
@@ -16,7 +16,7 @@
     <meta property="og:image" content="https://playerjohnson.github.io/quickdev-tools/favicon.svg">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="QuickDev Tools — Free Online Developer Utilities">
-    <meta name="twitter:description" content="Free developer tools: JSON formatter, regex tester, Base64 encoder, CSS gradient generator, diff tool, cron builder and XML formatter.">
+    <meta name="twitter:description" content="Free developer tools that run entirely in your browser. No uploads, no tracking, no accounts.">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -25,10 +25,64 @@
       "url": "https://playerjohnson.github.io/quickdev-tools/"
     }
     </script>
+    <style>
+        .privacy-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 24px; padding: 8px 18px;
+            background: rgba(195,247,58,.06); border: 1px solid rgba(195,247,58,.15);
+            border-radius: 99px; font-size: .82rem; color: var(--accent);
+            font-family: var(--display); font-weight: 600;
+            animation: fadeUp .8s ease-out both;
+            animation-delay: .3s;
+        }
+        .privacy-badge svg { flex-shrink: 0; }
+        .feature-strip {
+            display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+            padding: 0 24px 48px; animation: fadeIn .8s ease-out;
+        }
+        .feature-strip-item {
+            display: flex; align-items: center; gap: 8px;
+            font-size: .85rem; color: var(--text-dim); font-family: var(--display);
+        }
+        .feature-strip-item .dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+            box-shadow: 0 0 8px rgba(195,247,58,.4);
+        }
+        .section-heading {
+            font-family: var(--display); font-size: 1.5rem; font-weight: 800;
+            letter-spacing: -.02em; margin-bottom: 8px;
+        }
+        .section-sub { color: var(--text-muted); font-size: .95rem; margin-bottom: 32px; }
+        .explain-grid { display: grid; gap: 12px; }
+        .explain-card {
+            padding: 18px 22px; background: var(--bg-card);
+            border-radius: var(--radius); border: 1px solid var(--border);
+            transition: border-color .2s;
+        }
+        .explain-card:hover { border-color: rgba(195,247,58,.2); }
+        .explain-card a {
+            color: var(--accent); font-family: var(--display);
+            font-weight: 700; text-decoration: none; font-size: .95rem;
+            transition: opacity .15s;
+        }
+        .explain-card a:hover { opacity: .8; }
+        .explain-card p {
+            color: var(--text-muted); font-size: .88rem; margin-top: 4px; line-height: 1.5;
+        }
+        .why-section {
+            max-width: 680px; margin: 0 auto; padding: 64px 24px;
+            border-top: 1px solid var(--border);
+        }
+        .why-section p {
+            color: var(--text-muted); line-height: 1.75; font-size: .95rem; margin-bottom: 1em;
+        }
+        .why-section a { color: var(--accent); text-decoration: none; }
+        .why-section a:hover { opacity: .8; }
+    </style>
 </head>
 <body>
 <!-- GTM noscript --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54K98MWX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;font-family:-apple-system,system-ui,sans-serif;" onfocus="this.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);width:auto;height:auto;overflow:visible;z-index:100000;padding:8px 16px;background:#f59e0b;color:#0a0e1a;font-weight:600;font-size:14px;text-decoration:none;border-radius:4px;font-family:-apple-system,system-ui,sans-serif;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:100000;padding:8px 16px;background:var(--accent);color:#0B0D0F;font-weight:600;font-size:14px;text-decoration:none;font-family:-apple-system,system-ui,sans-serif;" onfocus="this.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);width:auto;height:auto;overflow:visible;z-index:100000;padding:8px 16px;background:#C3F73A;color:#0B0D0F;font-weight:600;font-size:14px;text-decoration:none;border-radius:4px;font-family:-apple-system,system-ui,sans-serif;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to content</a>
     <nav role="navigation" aria-label="Main" class="site-nav"><div class="nav-inner">
         <a href="./" class="nav-logo"><span class="logo-mark">&lt;/&gt;</span> QuickDev Tools</a>
         <ul class="nav-links">
@@ -38,65 +92,75 @@
         <button class="nav-hamburger" aria-label="Toggle menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
     </div></nav>
 
-    <div id="main-content"></div>
+    <main id="main-content">
     <section class="hero">
-        <h1>Developer Tools That Just Work</h1>
-        <p>Free, fast, client-side tools for everyday development tasks. No sign-up, no tracking, no nonsense.</p>
+        <h1>Developer Tools<br>That <em>Just Work</em></h1>
+        <p>Free, fast, client-side utilities for everyday dev tasks. No sign-up. No tracking. No uploads.</p>
+        <div class="privacy-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Your data never leaves your browser
+        </div>
     </section>
+
+    <div class="feature-strip">
+        <span class="feature-strip-item"><span class="dot"></span> 8 tools</span>
+        <span class="feature-strip-item"><span class="dot"></span> 100% client-side</span>
+        <span class="feature-strip-item"><span class="dot"></span> No accounts</span>
+        <span class="feature-strip-item"><span class="dot"></span> Open Network tab to verify</span>
+    </div>
 
     <div class="tool-grid" id="toolGrid"></div>
 
-
     <!-- Tool Descriptions -->
-    <section style="background:var(--bg-secondary,#0d1117);padding:3rem 0;">
-        <div style="max-width:800px;margin:0 auto;padding:0 1.5rem;">
-            <h2 style="font-size:1.4rem;margin-bottom:1.5rem;color:var(--text-primary,#e2e8f0);">Every Tool, Explained</h2>
-            <div style="display:grid;gap:1rem;">
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/json-formatter.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">JSON Formatter &amp; Validator</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Paste, format, validate and minify JSON. Handles large payloads without hanging. Syntax highlighting and line numbers included.</p>
+    <section style="padding: 64px 0;">
+        <div style="max-width:800px;margin:0 auto;padding:0 24px;">
+            <h2 class="section-heading">Every Tool, Explained</h2>
+            <p class="section-sub">Each one does one thing well. Click to open.</p>
+            <div class="explain-grid">
+                <div class="explain-card">
+                    <a href="tools/json-formatter.html">JSON Formatter &amp; Validator</a>
+                    <p>Paste, format, validate and minify JSON. Handles large payloads without hanging. Syntax highlighting and line numbers included.</p>
                 </div>
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/regex-tester.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">Regex Tester</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Write and test regular expressions with real-time match highlighting, capture groups, and flag toggles. Supports JavaScript regex syntax.</p>
+                <div class="explain-card">
+                    <a href="tools/regex-tester.html">Regex Tester</a>
+                    <p>Write and test regular expressions with real-time match highlighting, capture groups, and flag toggles. JavaScript regex syntax.</p>
                 </div>
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/base64-encoder.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">Base64 Encode/Decode</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Encode text or files to Base64 and decode Base64 strings back to plaintext. Useful for data URIs, API payloads and email encoding.</p>
+                <div class="explain-card">
+                    <a href="tools/base64-encoder.html">Base64 Encode/Decode</a>
+                    <p>Encode text or files to Base64 and decode strings back to plaintext. Useful for data URIs, API payloads and email encoding.</p>
                 </div>
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/css-gradient-generator.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">CSS Gradient Generator</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Build linear and radial CSS gradients visually. Drag colour stops, adjust angles, and copy production-ready CSS with one click.</p>
+                <div class="explain-card">
+                    <a href="tools/css-gradient-generator.html">CSS Gradient Generator</a>
+                    <p>Build linear and radial CSS gradients visually. Drag colour stops, adjust angles, and copy production-ready CSS.</p>
                 </div>
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/diff-tool.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">Text Diff Tool</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Compare two blocks of text side-by-side with inline diff highlighting. Find changes between config files, API responses or code versions.</p>
+                <div class="explain-card">
+                    <a href="tools/diff-tool.html">Text Diff Tool</a>
+                    <p>Compare two blocks of text side-by-side with inline diff highlighting. Find changes between config files, API responses or code versions.</p>
                 </div>
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/cron-builder.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">Cron Expression Builder</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Build cron expressions with a visual interface. See the next 5 run times instantly so you know your schedule is right before deploying.</p>
+                <div class="explain-card">
+                    <a href="tools/cron-builder.html">Cron Expression Builder</a>
+                    <p>Build cron expressions with a visual interface. See the next 5 run times instantly so you know your schedule is right.</p>
                 </div>
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/xml-formatter.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">XML Formatter</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Format and pretty-print XML with proper indentation. Useful for SOAP responses, configuration files, and SVG markup.</p>
+                <div class="explain-card">
+                    <a href="tools/xml-formatter.html">XML Formatter</a>
+                    <p>Format and pretty-print XML with proper indentation. Useful for SOAP responses, configuration files, and SVG markup.</p>
                 </div>
-                <div style="padding:1rem 1.25rem;background:var(--bg-card,#161b22);border-radius:8px;border:1px solid var(--border,#21262d);">
-                    <a href="tools/colour-palette.html" style="color:var(--accent,#f59e0b);font-weight:600;text-decoration:none;font-size:0.95rem;">Colour Palette Generator</a>
-                    <p style="color:var(--text-secondary,#8b949e);font-size:0.88rem;margin-top:0.3rem;">Generate harmonious colour palettes from a base colour. Export as HEX, RGB, or HSL. Includes contrast ratio checker for accessibility.</p>
+                <div class="explain-card">
+                    <a href="tools/colour-palette.html">Colour Palette Generator</a>
+                    <p>Generate harmonious colour palettes from a base colour. Export as HEX, RGB, or HSL with contrast ratio checking.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Why QuickDev -->
-    <section style="padding:3rem 0;">
-        <div style="max-width:700px;margin:0 auto;padding:0 1.5rem;">
-            <h2 style="font-size:1.4rem;margin-bottom:1rem;color:var(--text-primary,#e2e8f0);">Why QuickDev?</h2>
-            <p style="color:var(--text-secondary,#8b949e);line-height:1.7;font-size:0.95rem;margin-bottom:1rem;">Most free developer tools are ad-covered wrappers that send your data to someone else's server. QuickDev Tools runs entirely in your browser. Your JSON payloads, regex patterns, and config files never leave your machine. No accounts, no tracking, no data collection.</p>
-            <p style="color:var(--text-secondary,#8b949e);line-height:1.7;font-size:0.95rem;margin-bottom:1rem;">These are the tools a working developer actually reaches for during the day &#8212; not a list of 200 novelty generators built to farm search traffic. Each tool is built to do one thing well, load instantly, and get out of your way.</p>
-            <p style="color:var(--text-secondary,#8b949e);line-height:1.7;font-size:0.95rem;">Built by <a href="https://playerjohnson.github.io/freelance-dev/" style="color:var(--accent,#f59e0b);text-decoration:none;">Anthony D Johnson</a>, a senior .NET developer with 9+ years building enterprise software for UK government.</p>
-        </div>
+    <section class="why-section">
+        <h2 class="section-heading">Why QuickDev?</h2>
+        <p>Most free developer tools are ad-plastered wrappers that send your data to someone else's server. QuickDev Tools runs entirely in your browser. Your JSON payloads, regex patterns, and config files never leave your machine. No accounts, no tracking, no data collection.</p>
+        <p>These are the tools a working developer actually reaches for during the day — not a list of 200 novelty generators built to farm search traffic. Each tool does one thing well, loads instantly, and gets out of your way.</p>
+        <p>Built by <a href="https://playerjohnson.github.io/freelance-dev/">Anthony D Johnson</a>, a senior .NET developer with 9+ years building enterprise software for UK government.</p>
     </section>
+    </main>
 
     <footer role="contentinfo" class="site-footer"><div class="footer-inner">
         <div class="footer-brand">
@@ -106,24 +170,29 @@
         <div class="footer-col"><h4>Popular</h4><ul>
             <li><a href="tools/json-formatter.html">JSON Formatter</a></li>
             <li><a href="tools/regex-tester.html">Regex Tester</a></li>
-            <li><a href="tools/base64-encoder.html">Base64 Encode/Decode</a></li>
+            <li><a href="tools/base64-encoder.html">Base64 Encoder</a></li>
         </ul></div>
         <div class="footer-col"><h4>Generators</h4><ul>
             <li><a href="tools/css-gradient-generator.html">CSS Gradient</a></li>
             <li><a href="tools/cron-builder.html">Cron Builder</a></li>
             <li><a href="tools/colour-palette.html">Colour Palette</a></li>
         </ul></div>
-    </div><div class="footer-bottom"><p>All tools run client-side. Your data never leaves your browser. <a href="privacy.html" style="color:var(--text-dim);text-decoration:underline">Privacy</a> · <a href="terms.html" style="color:var(--text-dim);text-decoration:underline">Terms</a> © 2026 QuickDev Tools.</p></div></footer>
+        <div class="footer-col"><h4>Learn</h4><ul>
+            <li><a href="blog/">Developer Blog</a></li>
+            <li><a href="blog/json-formatting-guide.html">JSON Guide</a></li>
+            <li><a href="blog/regex-cheat-sheet.html">Regex Cheat Sheet</a></li>
+        </ul></div>
+    </div><div class="footer-bottom"><p>All tools run client-side. Your data never leaves your browser. <a href="privacy.html" style="color:var(--text-dim);text-decoration:underline">Privacy</a> · <a href="terms.html" style="color:var(--text-dim);text-decoration:underline">Terms</a> &copy; 2026 QuickDev Tools.</p></div></footer>
     <script src="assets/js/core.js"></script>
 <script src="cookie-consent.js"></script>
 <!-- Cross-site links -->
-<div style="background:#0a0e1a;border-top:1px solid #1e293b;padding:10px 24px;text-align:center;font-family:-apple-system,system-ui,sans-serif;">
-  <span style="color:#475569;font-size:11px;margin-right:8px;">More tools:</span><a href="https://playerjohnson.github.io/uk-devtools/" style="color:#94a3b8;text-decoration:none;font-size:12px;" title="Free UK tax &amp; business calculators">UK Calculator Hub</a> · <a href="https://playerjohnson.github.io/public-sector-tools/" style="color:#94a3b8;text-decoration:none;font-size:12px;" title="Council tax, FOI &amp; gov tools">Public Sector Tools</a> · <a href="https://playerjohnson.github.io/everyday-tools/" style="color:#94a3b8;text-decoration:none;font-size:12px;" title="PDF, image, QR &amp; daily utilities">Everyday Tools</a> · <a href="https://playerjohnson.github.io/ict-edge-indicators/" style="color:#94a3b8;text-decoration:none;font-size:12px;" title="Pro TradingView indicators">ICT Edge Indicators</a> · <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#94a3b8;text-decoration:none;font-size:12px;" title="Freelance .NET &amp; Azure services">Hire a Developer</a>
+<div style="background:#0B0D0F;border-top:1px solid #262D38;padding:10px 24px;text-align:center;font-family:'DM Sans',-apple-system,system-ui,sans-serif;">
+  <span style="color:#4B5563;font-size:11px;margin-right:8px;">More tools:</span><a href="https://playerjohnson.github.io/uk-devtools/" style="color:#6B7280;text-decoration:none;font-size:12px;" title="Free UK tax &amp; business calculators">UK Calculator Hub</a> · <a href="https://playerjohnson.github.io/public-sector-tools/" style="color:#6B7280;text-decoration:none;font-size:12px;" title="Council tax, FOI &amp; gov tools">Public Sector Tools</a> · <a href="https://playerjohnson.github.io/everyday-tools/" style="color:#6B7280;text-decoration:none;font-size:12px;" title="PDF, image, QR &amp; daily utilities">Everyday Tools</a> · <a href="https://playerjohnson.github.io/ict-edge-indicators/" style="color:#6B7280;text-decoration:none;font-size:12px;" title="Pro TradingView indicators">ICT Edge Indicators</a> · <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#6B7280;text-decoration:none;font-size:12px;" title="Freelance .NET &amp; Azure services">Hire a Developer</a>
 </div>
 <!-- Freelance Dev Promo -->
-<div style="background:#111827;border-top:1px solid #1e293b;padding:14px 24px;text-align:center;font-family:-apple-system,system-ui,sans-serif;font-size:13px;">
-  <span style="color:#94a3b8;">Need a developer?</span>
-  <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#f59e0b;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson — Senior .NET & Azure Developer →</a>
+<div style="background:#13161A;border-top:1px solid #262D38;padding:14px 24px;text-align:center;font-family:'DM Sans',-apple-system,system-ui,sans-serif;font-size:13px;">
+  <span style="color:#6B7280;">Need a developer?</span>
+  <a href="https://playerjohnson.github.io/freelance-dev/" style="color:#C3F73A;text-decoration:none;font-weight:600;margin-left:6px;">Hire Anthony D Johnson &mdash; Senior .NET & Azure Developer &rarr;</a>
 </div>
 </body>
 </html>
